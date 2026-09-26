@@ -649,8 +649,7 @@ export const Scripts: ModdedBattleScriptsData = {
 					// This does NOT revert the paralyse speed drop or the burn attack drop.
 					// Also, being put to sleep clears the recharge condition.
 					if (moveData.status === 'slp' && target.volatiles['mustrecharge']) {
-						// The sleep move is guaranteed to hit in this situation, unless Sleep Clause activates.
-						// Do not clear recharge in that case.
+						// The sleep move is guaranteed to hit in this situation.
 						if (target.setStatus(moveData.status, pokemon, move)) {
 							target.removeVolatile('mustrecharge');
 							this.battle.hint(

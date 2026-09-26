@@ -531,9 +531,7 @@ export class Pokemon {
 		const health = this.getHealth();
 		let details = this.details;
 		if (this.illusion) {
-			details = this.illusion.getUpdatedDetails(
-				this.battle.ruleTable.has('illusionlevelmod') ? this.illusion.level : this.level
-			);
+			details = this.illusion.getUpdatedDetails(this.level);
 		}
 		if (this.terastallized) details += `, tera:${this.terastallized}`;
 		return { side: health.side, secret: `${details}|${health.secret}`, shared: `${details}|${health.shared}` };
@@ -626,9 +624,7 @@ export class Pokemon {
 
 	getActionSpeed() {
 		let speed = this.getStat('spe', false, false);
-		const trickRoomCheck = this.battle.ruleTable.has('twisteddimensionmod') ?
-			!this.battle.field.getPseudoWeather('trickroom') : this.battle.field.getPseudoWeather('trickroom');
-		if (trickRoomCheck) {
+		if (this.battle.field.getPseudoWeather('trickroom')) {
 			speed = 10000 - speed;
 		}
 		return this.battle.trunc(speed, 13);
@@ -2017,10 +2013,7 @@ export class Pokemon {
 		if (!this.hp) return { side: this.side.id, secret: '0 fnt', shared: '0 fnt' };
 		let secret = `${this.hp}/${this.maxhp}`;
 		let shared;
-		if (this.battle.reportExactHP) {
-			shared = secret;
-		} else if (this.battle.reportPercentages || this.battle.gen >= 7) {
-			// HP Percentage Mod mechanics
+		if (this.battle.gen >= 7) {
 			let percentage = Math.ceil(100 * this.hp / this.maxhp);
 			if (percentage === 100 && this.hp < this.maxhp) {
 				percentage = 99;

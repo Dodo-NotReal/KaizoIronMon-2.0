@@ -2080,9 +2080,6 @@ export const Abilities: import('../sim/dex-abilities').AbilityDataTable = {
 				const details = pokemon.getUpdatedDetails();
 				this.add('replace', pokemon, details);
 				this.add('-end', pokemon, 'Illusion');
-				if (this.ruleTable.has('illusionlevelmod')) {
-					this.hint("Illusion Level Mod is active, so this Pok\u00e9mon's true level was hidden.", true);
-				}
 			}
 		},
 		onFaint(pokemon) {

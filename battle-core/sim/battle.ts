@@ -128,9 +128,6 @@ export class Battle {
 	ruleTable: Dex.RuleTable;
 	prng: PRNG;
 	rated: boolean | string;
-	reportExactHP: boolean;
-	reportPercentages: boolean;
-	supportCancel: boolean;
 
 	actions: BattleActions;
 	queue: BattleQueue;
@@ -226,9 +223,6 @@ export class Battle {
 		this.prng = options.prng || new PRNG(options.seed || undefined);
 		this.prngSeed = this.prng.startingSeed;
 		this.rated = options.rated || !!options.rated;
-		this.reportExactHP = !!format.debug;
-		this.reportPercentages = false;
-		this.supportCancel = false;
 
 		this.queue = new BattleQueue(this);
 		this.actions = new BattleActions(this);
@@ -1451,10 +1445,9 @@ export class Battle {
 			break;
 		}
 
-		const multipleRequestsExist = requests.filter(Boolean).length >= 2;
 		for (let i = 0; i < this.sides.length; i++) {
 			if (requests[i]) {
-				if (!this.supportCancel || !multipleRequestsExist) requests[i].noCancel = true;
+				requests[i].noCancel = true;
 			} else {
 				requests[i] = { wait: true, side: this.sides[i].getRequestData() };
 			}
@@ -1859,10 +1852,6 @@ export class Battle {
 			throw new Error('Battle not started: A player has an empty team.');
 		}
 
-		if (this.debugMode) {
-			this.checkEVBalance();
-		}
-
 		if (format.customRules) {
 			const plural = format.customRules.length === 1 ? '' : 's';
 			const open = format.customRules.length <= 5 ? ' open' : '';
@@ -1907,20 +1896,6 @@ export class Battle {
 				this.addSplit(pokemon.side.id, ['poke', pokemon.side.id, details, '']);
 			}
 			this.makeRequest('teampreview');
-		}
-	}
-
-	checkEVBalance() {
-		let limitedEVs: boolean | null = null;
-		for (const side of this.sides) {
-			const sideLimitedEVs = !side.pokemon.some(
-				pokemon => Object.values(pokemon.set.evs).reduce((a, b) => a + b, 0) > 510
-			);
-			if (limitedEVs === null) {
-				limitedEVs = sideLimitedEVs;
-			} else if (limitedEVs !== sideLimitedEVs) {
-				this.add('bigerror', "Warning: One player isn't adhering to a 510 EV limit, and the other player is.");
-			}
 		}
 	}
 
@@ -2266,12 +2241,9 @@ export class Battle {
 		stat = tr(tr(2 * stat + set.ivs[statName] + tr(set.evs[statName] / 4)) * set.level / 100 + 5);
 		const nature = this.dex.natures.get(set.nature);
 		// Natures are calculated with 16-bit truncation.
-		// This only affects Eternatus-Eternamax in Pure Hackmons.
 		if (nature.plus === statName) {
-			stat = this.ruleTable.has('overflowstatmod') ? Math.min(stat, 595) : stat;
 			stat = tr(tr(stat * 110, 16) / 100);
 		} else if (nature.minus === statName) {
-			stat = this.ruleTable.has('overflowstatmod') ? Math.min(stat, 728) : stat;
 			stat = tr(tr(stat * 90, 16) / 100);
 		}
 		return stat;
@@ -2967,7 +2939,7 @@ export class Battle {
 		let totalActions = 0;
 		for (const side of this.sides) {
 			if (side.isChoiceDone()) {
-				if (!this.supportCancel) side.choice.cantUndo = true;
+				side.choice.cantUndo = true;
 				totalActions++;
 			}
 		}
@@ -3094,8 +3066,8 @@ export class Battle {
 					ivs: null!,
 					level: set.level,
 				};
-				if (this.gen === 8 && !this.ruleTable.has('dynamaxclause')) newSet.gigantamax = set.gigantamax;
-				if (this.gen === 9 && !this.ruleTable.has('terastalclause')) newSet.teraType = set.teraType;
+				if (this.gen === 8) newSet.gigantamax = set.gigantamax;
+				if (this.gen === 9) newSet.teraType = set.teraType;
 				// Only display Hidden Power type if the Pokemon has Hidden Power
 				// This is based on how team sheets were written in past VGC formats
 				if (set.moves.some(m => this.dex.moves.get(m).id === 'hiddenpower')) newSet.hpType = set.hpType;

@@ -82,6 +82,21 @@ test('Link Battles start and resolve a turn in all nine generations', () => {
 	}
 });
 
+test('visible HP follows the generation protocol', () => {
+	for (const [gen, denominator] of [[4, 48], [7, 100]] as const) {
+		const teams = sampleTeams();
+		const engine = createBattle({
+			format: `gen${gen}linkbattle`,
+			p1: { name: 'Alice', team: teams.p1 },
+			p2: { name: 'Bob', team: teams.p2 },
+		});
+		engine.choose('p1', 'move 1');
+		engine.choose('p2', 'move 1');
+		const damage = engine.events.find(event => event.line.startsWith('|-damage|'))?.line;
+		assert.match(damage || '', new RegExp(`\\d+/${denominator}(?:[| ]|$)`), `gen${gen}`);
+	}
+});
+
 test('Dex species metadata and generation inheritance survive without tiers', () => {
 	const samples = [
 		['Mewtwo', 1], ['Tyranitar', 2], ['Rayquaza', 3], ['Garchomp', 4],

@@ -437,15 +437,9 @@ export class TeamValidator {
 				problems = problems.concat(setProblems);
 			}
 			if (options.removeNicknames) {
-				const useCrossSpeciesNicknames = format.name.includes('Cross Evolution') || ruleTable.has('franticfusionsmod');
 				const species = dex.species.get(set.species);
-				let crossSpecies: Species;
-				if (useCrossSpeciesNicknames && (crossSpecies = dex.species.get(set.name)).exists) {
-					set.name = crossSpecies.name;
-				} else {
-					set.name = species.baseSpecies;
-					if (species.baseSpecies === 'Unown') set.species = 'Unown';
-				}
+				set.name = species.baseSpecies;
+				if (species.baseSpecies === 'Unown') set.species = 'Unown';
 			}
 		}
 
