@@ -437,10 +437,6 @@ export const MovesText: { [id: IDEntry]: MoveText } = {
 		name: "Belch",
 		desc: "This move cannot be selected until the user eats a Berry, either by eating one that was held, stealing and eating one off another Pokemon with Bug Bite or Pluck, or eating one that was thrown at it with Fling. Once the condition is met, this move can be selected and used for the rest of the battle even if the user gains or uses another item or switches out. Consuming a Berry with Natural Gift does not count for the purposes of eating one.",
 		shortDesc: "Cannot be selected until the user eats a Berry.",
-		champions: {
-			desc: "Fails unless the user has eaten a Berry, either by eating one that was held, stealing and eating one off another Pokemon with Bug Bite or Pluck, or eating one that was thrown at it with Fling. Consuming a Berry with Natural Gift does not count for the purposes of eating one.",
-			shortDesc: "Fails unless the user has eaten a Berry.",
-		},
 	},
 	bellydrum: {
 		name: "Belly Drum",
@@ -1184,9 +1180,6 @@ export const MovesText: { [id: IDEntry]: MoveText } = {
 		name: "Covet",
 		desc: "If this attack was successful and the user has not fainted, it steals the target's held item if the user is not holding one. A target with the Sticky Hold Ability does not lose its held item if it has not fainted. The target's item is not stolen if it is a Blue Orb, Red Orb, Adamant Crystal, Lustrous Globe, Griseous Core, Plate, Drive, Memory, Rusted Sword, Rusted Shield, Booster Energy, or Mask held by a Kyogre, Groudon, Dialga, Palkia, Giratina, Arceus, Genesect, Silvally, Zacian, Zamazenta, Paradox Pokemon, or Ogerpon, respectively, or if the user is one of those species and the target is holding the respective item. In this case, Paradox Pokemon include every species with the Protosynthesis and Quark Drive Abilities, except Gouging Fire, Raging Bolt, Iron Boulder, and Iron Crown. Items lost to this move cannot be regained with Recycle or the Harvest Ability.",
 		shortDesc: "If the user has no item, it steals the target's.",
-		champions: {
-			desc: "If this attack was successful and the user is not holding an item, it steals the target's held item. A target with the Sticky Hold Ability does not lose its held item if it has not fainted. The target's item is not stolen if it is a Mega Stone and either the user or the target is the species that can Mega Evolve with it. Items lost to this move cannot be regained with Recycle or the Harvest Ability.",
-		},
 		gen8: {
 			desc: "If this attack was successful and the user has not fainted, it steals the target's held item if the user is not holding one. A target with the Sticky Hold Ability does not lose its held item if it has not fainted. The target's item is not stolen if it is a Blue Orb, Red Orb, Griseous Orb, Plate, Drive, Memory, Rusted Sword, or Rusted Shield held by a Kyogre, Groudon, Giratina, Arceus, Genesect, Silvally, Zacian, or Zamazenta, respectively, or if the user is one of those species and the target is holding the respective item. Items lost to this move cannot be regained with Recycle or the Harvest Ability.",
 		},
@@ -1409,10 +1402,6 @@ export const MovesText: { [id: IDEntry]: MoveText } = {
 		name: "Dire Claw",
 		desc: "Has a 50% chance to cause the target to either fall asleep, become poisoned, or become paralyzed.",
 		shortDesc: "50% chance to sleep, poison, or paralyze target.",
-		champions: {
-			desc: "Has a 30% chance to cause the target to either fall asleep, become poisoned, or become paralyzed.",
-			shortDesc: "30% chance to sleep, poison, or paralyze target.",
-		},
 	},
 	disable: {
 		name: "Disable",
@@ -1957,9 +1946,6 @@ export const MovesText: { [id: IDEntry]: MoveText } = {
 		name: "Fake Out",
 		desc: "Has a 100% chance to make the target flinch. Fails unless it is the user's first turn on the field.",
 		shortDesc: "Hits first. First turn out only. 100% flinch chance.",
-		champions: {
-			desc: "Has a 100% chance to make the target flinch. This move cannot be selected unless it is the user's first turn on the field.",
-		},
 	},
 	faketears: {
 		name: "Fake Tears",
@@ -2105,9 +2091,6 @@ export const MovesText: { [id: IDEntry]: MoveText } = {
 		name: "First Impression",
 		desc: "Fails unless it is the user's first turn on the field.",
 		shortDesc: "Nearly always goes first. First turn out only.",
-		champions: {
-			desc: "This move cannot be selected unless it is the user's first turn on the field.",
-		},
 	},
 	fishiousrend: {
 		name: "Fishious Rend",
@@ -2343,10 +2326,6 @@ export const MovesText: { [id: IDEntry]: MoveText } = {
 		name: "Freeze-Dry",
 		desc: "Has a 10% chance to freeze the target. This move's type effectiveness against Water is changed to be super effective no matter what this move's type is.",
 		shortDesc: "10% chance to freeze. Super effective on Water.",
-		champions: {
-			desc: "This move's type effectiveness against Water is changed to be super effective no matter what this move's type is.",
-			shortDesc: "Super effective on Water.",
-		},
 	},
 	freezeshock: {
 		name: "Freeze Shock",
@@ -3437,10 +3416,6 @@ export const MovesText: { [id: IDEntry]: MoveText } = {
 		name: "Iron Head",
 		desc: "Has a 30% chance to make the target flinch.",
 		shortDesc: "30% chance to make the target flinch.",
-		champions: {
-			desc: "Has a 20% chance to make the target flinch.",
-			shortDesc: "20% chance to make the target flinch.",
-		},
 	},
 	irontail: {
 		name: "Iron Tail",
@@ -3524,9 +3499,6 @@ export const MovesText: { [id: IDEntry]: MoveText } = {
 		name: "Knock Off",
 		desc: "This move's power is multiplied by 1.5 if the target is holding an item, and the target loses its held item if the user has not fainted. A target with the Sticky Hold Ability does not lose its held item if it has not fainted. This move does not increase in power or remove the target's item if it is a Blue Orb, Red Orb, Adamant Crystal, Lustrous Globe, Griseous Core, Plate, Drive, Memory, Rusted Sword, Rusted Shield, Booster Energy, or Mask held by a Kyogre, Groudon, Dialga, Palkia, Giratina, Arceus, Genesect, Silvally, Zacian, Zamazenta, Paradox Pokemon, or Ogerpon, respectively, or if the user is one of those species and the target is holding the respective item. In this case, Paradox Pokemon include every species with the Protosynthesis and Quark Drive Abilities, except Gouging Fire, Raging Bolt, Iron Boulder, and Iron Crown. Items lost to this move cannot be regained with Recycle or the Harvest Ability.",
 		shortDesc: "1.5× damage if foe holds an item. Removes item.",
-		champions: {
-			desc: "This move's power is multiplied by 1.5 if the target is holding an item, and the target loses its held item. A target with the Sticky Hold Ability does not lose its held item if it has not fainted. This move does not increase in power or remove the target's item if it is a Mega Stone held by the species that can Mega Evolve with it. Items lost to this move cannot be regained with Recycle or the Harvest Ability.",
-		},
 		gen8: {
 			desc: "This move's power is multiplied by 1.5 if the target is holding an item, and the target loses its held item if the user has not fainted. A target with the Sticky Hold Ability does not lose its held item if it has not fainted. This move does not increase in power or remove the target's item if it is a Blue Orb, Red Orb, Griseous Orb, Plate, Drive, Memory, Rusted Sword, or Rusted Shield held by a Kyogre, Groudon, Giratina, Arceus, Genesect, Silvally, Zacian, or Zamazenta, respectively, or if the user is one of those species and the target is holding the respective item. Items lost to this move cannot be regained with Recycle or the Harvest Ability.",
 		},
@@ -3873,10 +3845,6 @@ export const MovesText: { [id: IDEntry]: MoveText } = {
 		name: "Make It Rain",
 		desc: "Lowers the user's Special Attack by 1 stage.",
 		shortDesc: "Lowers the user's Sp. Atk by 1. Hits foe(s).",
-		champions: {
-			desc: "Lowers the user's Special Attack by 2 stages.",
-			shortDesc: "Lowers the user's Sp. Atk by 2. Hits foe(s).",
-		},
 
 		activate: "#payday",
 	},
@@ -4125,15 +4093,8 @@ export const MovesText: { [id: IDEntry]: MoveText } = {
 		name: "Metronome",
 		desc: "A random move is selected for use, other than After You, Apple Acid, Armor Cannon, Assist, Astral Barrage, Aura Wheel, Baneful Bunker, Beak Blast, Behemoth Bash, Behemoth Blade, Belch, Bestow, Blazing Torque, Body Press, Branch Poke, Breaking Swipe, Celebrate, Chatter, Chilling Water, Chilly Reception, Clangorous Soul, Collision Course, Combat Torque, Comeuppance, Copycat, Counter, Covet, Crafty Shield, Decorate, Destiny Bond, Detect, Diamond Storm, Doodle, Double Iron Bash, Double Shock, Dragon Ascent, Dragon Energy, Drum Beating, Dynamax Cannon, Electro Drift, Endure, Eternabeam, False Surrender, Feint, Fiery Wrath, Fillet Away, Fleur Cannon, Focus Punch, Follow Me, Freeze Shock, Freezing Glare, Glacial Lance, Grav Apple, Helping Hand, Hold Hands, Hyper Drill, Hyperspace Fury, Hyperspace Hole, Ice Burn, Instruct, Jet Punch, Jungle Healing, King's Shield, Life Dew, Light of Ruin, Magical Torque, Make It Rain, Mat Block, Me First, Meteor Assault, Metronome, Mimic, Mind Blown, Mirror Coat, Mirror Move, Moongeist Beam, Nature Power, Nature's Madness, Noxious Torque, Obstruct, Order Up, Origin Pulse, Overdrive, Photon Geyser, Plasma Fists, Population Bomb, Pounce, Power Shift, Precipice Blades, Protect, Pyro Ball, Quash, Quick Guard, Rage Fist, Rage Powder, Raging Bull, Raging Fury, Relic Song, Revival Blessing, Ruination, Salt Cure, Secret Sword, Shed Tail, Shell Trap, Silk Trap, Sketch, Sleep Talk, Snap Trap, Snarl, Snatch, Snore, Snowscape, Spectral Thief, Spicy Extract, Spiky Shield, Spirit Break, Spotlight, Springtide Storm, Steam Eruption, Steel Beam, Strange Steam, Struggle, Sunsteel Strike, Surging Strikes, Switcheroo, Techno Blast, Tera Starstorm, Thief, Thousand Arrows, Thousand Waves, Thunder Cage, Thunderous Kick, Tidy Up, Trailblaze, Transform, Trick, Twin Beam, V-create, Wicked Blow, Wicked Torque, or Wide Guard.",
 		shortDesc: "Picks a random move.",
-		gen8bdsp: {
-			desc: "A random move is selected for use, other than After You, Belch, Body Press, Chatter, Copycat, Counter, Covet, Destiny Bond, Detect, Dragon Ascent, Endure, Feint, Focus Punch, Follow Me, Helping Hand, Life Dew, Metronome, Mimic, Mirror Coat, Nature Power, Origin Pulse, Precipice Blades, Protect, Quash, Quick Guard, Rage Powder, Sketch, Sleep Talk, Snarl, Snore, Spiky Shield, Struggle, Switcheroo, Thief, Transform, Trick, or Wide Guard.",
-		},
 		gen8: {
 			desc: "A random move is selected for use, other than After You, Apple Acid, Assist, Astral Barrage, Aura Wheel, Baneful Bunker, Beak Blast, Behemoth Bash, Behemoth Blade, Belch, Bestow, Body Press, Branch Poke, Breaking Swipe, Celebrate, Chatter, Clangorous Soul, Copycat, Counter, Covet, Crafty Shield, Decorate, Destiny Bond, Detect, Diamond Storm, Double Iron Bash, Dragon Ascent, Dragon Energy, Dragon Hammer, Drum Beating, Dynamax Cannon, Endure, Eternabeam, False Surrender, Feint, Fiery Wrath, Fleur Cannon, Focus Punch, Follow Me, Freeze Shock, Freezing Glare, Glacial Lance, Grav Apple, Helping Hand, Hold Hands, Hyperspace Fury, Hyperspace Hole, Ice Burn, Instruct, Jungle Healing, King's Shield, Life Dew, Light of Ruin, Mat Block, Me First, Meteor Assault, Metronome, Mimic, Mind Blown, Mirror Coat, Mirror Move, Moongeist Beam, Nature Power, Nature's Madness, Obstruct, Origin Pulse, Overdrive, Photon Geyser, Plasma Fists, Precipice Blades, Protect, Pyro Ball, Quash, Quick Guard, Rage Powder, Relic Song, Secret Sword, Shell Trap, Sketch, Sleep Talk, Snap Trap, Snarl, Snatch, Snore, Spectral Thief, Spiky Shield, Spirit Break, Spotlight, Steam Eruption, Steel Beam, Strange Steam, Struggle, Sunsteel Strike, Surging Strikes, Switcheroo, Techno Blast, Thief, Thousand Arrows, Thousand Waves, Thunder Cage, Thunderous Kick, Transform, Trick, V-create, Wicked Blow, or Wide Guard.",
-		},
-		gen7letsgo: {
-			desc: "A random move that was introduced in gen 1 is selected for use, other than Counter, Mimic, Mirror Move, Struggle, or Transform.",
-			shortDesc: "Picks a random move from gen 1.",
 		},
 		gen7: {
 			desc: "A random move is selected for use, other than After You, Assist, Baneful Bunker, Beak Blast, Belch, Bestow, Celebrate, Chatter, Copycat, Counter, Covet, Crafty Shield, Destiny Bond, Detect, Diamond Storm, Dragon Ascent, Endure, Feint, Fleur Cannon, Focus Punch, Follow Me, Freeze Shock, Helping Hand, Hold Hands, Hyperspace Fury, Hyperspace Hole, Ice Burn, Instruct, King's Shield, Light of Ruin, Mat Block, Me First, Metronome, Mimic, Mind Blown, Mirror Coat, Mirror Move, Nature Power, Origin Pulse, Photon Geyser, Plasma Fists, Precipice Blades, Protect, Quash, Quick Guard, Rage Powder, Relic Song, Secret Sword, Shell Trap, Sketch, Sleep Talk, Snarl, Snatch, Snore, Spectral Thief, Spiky Shield, Spotlight, Steam Eruption, Struggle, Switcheroo, Techno Blast, Thief, Thousand Arrows, Thousand Waves, Transform, Trick, V-create, or Wide Guard.",
@@ -4339,10 +4300,6 @@ export const MovesText: { [id: IDEntry]: MoveText } = {
 		name: "Moonblast",
 		desc: "Has a 30% chance to lower the target's Special Attack by 1 stage.",
 		shortDesc: "30% chance to lower the target's Sp. Atk by 1.",
-		champions: {
-			desc: "Has a 10% chance to lower the target's Special Attack by 1 stage.",
-			shortDesc: "10% chance to lower the target's Sp. Atk by 1.",
-		},
 	},
 	moongeistbeam: {
 		name: "Moongeist Beam",
@@ -5147,10 +5104,6 @@ export const MovesText: { [id: IDEntry]: MoveText } = {
 		name: "Rage Fist",
 		desc: "Power is equal to 50+(X × 50), where X is the total number of times the user has been hit by a damaging attack during the battle, even if the user did not lose HP from the attack. X cannot be greater than 6 and does not reset upon switching out or fainting. Each hit of a multi-hit attack is counted, but confusion damage is not counted.",
 		shortDesc: "+50 power for each time user was hit. Max 6 hits.",
-		champions: {
-			desc: "Power is equal to 50+(X × 50), where X is the total number of times the user has been hit by a damaging attack during the battle, even if the user did not lose HP from the attack. X cannot be greater than 6 and resets to 0 when the user leaves the field. Each hit of a multi-hit attack is counted, but confusion damage is not counted.",
-			shortDesc: "+50 BP/hit on user. Max 6 hits. Resets on switch-out.",
-		},
 	},
 	ragepowder: {
 		name: "Rage Powder",
@@ -5546,10 +5499,6 @@ export const MovesText: { [id: IDEntry]: MoveText } = {
 		name: "Salt Cure",
 		desc: "Causes damage to the target equal to 1/8 of its maximum HP (1/4 if the target is Steel or Water type), rounded down, at the end of each turn during effect. This effect ends when the target is no longer active.",
 		shortDesc: "Deals 1/8 max HP each turn; 1/4 on Steel, Water.",
-		champions: {
-			desc: "Causes damage to the target equal to 1/16 of its maximum HP (1/8 if the target is Steel or Water type), rounded down, at the end of each turn during effect. This effect ends when the target is no longer active.",
-			shortDesc: "Deals 1/16 max HP each turn; 1/8 on Steel, Water.",
-		},
 
 		start: "  {POKEMON} is being salt cured!",
 		damage: "  {POKEMON} is hurt by Salt Cure!",
@@ -6540,10 +6489,6 @@ export const MovesText: { [id: IDEntry]: MoveText } = {
 		name: "Stuff Cheeks",
 		desc: "This move cannot be selected unless the user is holding a Berry. The user eats its Berry and raises its Defense by 2 stages. This effect is not prevented by the Klutz or Unnerve Abilities, or the effects of Embargo or Magic Room. Fails if the user is not holding a Berry.",
 		shortDesc: "Must hold Berry to use. User eats Berry, Def +2.",
-		champions: {
-			desc: "Fails if the user is not holding a Berry. The user eats its Berry and raises its Defense by 2 stages. This effect is not prevented by the Klutz or Unnerve Abilities, or the effects of Embargo or Magic Room.",
-			shortDesc: "Fails unless a Berry is held. User eats Berry, Def +2.",
-		},
 	},
 	stunspore: {
 		name: "Stun Spore",
@@ -6720,9 +6665,6 @@ export const MovesText: { [id: IDEntry]: MoveText } = {
 		name: "Switcheroo",
 		desc: "The user swaps its held item with the target's held item. Fails if both the user and the target have no held item, or if the user is trying to give or take a Blue Orb, Red Orb, Adamant Crystal, Lustrous Globe, Griseous Core, Plate, Drive, Memory, Rusted Sword, Rusted Shield, Booster Energy, or Mask to or from a Kyogre, Groudon, Dialga, Palkia, Giratina, Arceus, Genesect, Silvally, Zacian, Zamazenta, Paradox Pokemon, or Ogerpon, respectively. In this case, Paradox Pokemon include every species with the Protosynthesis and Quark Drive Abilities, except Gouging Fire, Raging Bolt, Iron Boulder, and Iron Crown. The target is immune to this move if it has the Sticky Hold Ability.",
 		shortDesc: "User switches its held item with the target's.",
-		champions: {
-			desc: "The user swaps its held item with the target's held item. Fails if both the user and the target have no held item, or if the user is trying to give or take a Mega Stone to or from the species that can Mega Evolve with it. The target is immune to this move if it has the Sticky Hold Ability.",
-		},
 		gen8: {
 			desc: "The user swaps its held item with the target's held item. Fails if both the user and the target have no held item, or if the user is trying to give or take a Blue Orb, Red Orb, Griseous Orb, Plate, Drive, Memory, Rusted Sword, or Rusted Shield to or from a Kyogre, Groudon, Giratina, Arceus, Genesect, Silvally, Zacian, or Zamazenta, respectively. The target is immune to this move if it has the Sticky Hold Ability.",
 		},
@@ -6921,10 +6863,6 @@ export const MovesText: { [id: IDEntry]: MoveText } = {
 		name: "Teleport",
 		desc: "If this move is successful and the user has not fainted, the user switches out even if it is trapped and is replaced immediately by a selected party member. The user does not switch out if there are no unfainted party members.",
 		shortDesc: "User switches out.",
-		gen7letsgo: {
-			desc: "If this move is successful and the user has not fainted, the user switches out even if it is trapped and is replaced immediately by a selected party member. The user does not switch out if there are no unfainted party members.",
-			shortDesc: "User switches out.",
-		},
 		gen7: {
 			desc: "Fails when used.",
 			shortDesc: "Fails when used.",
@@ -6954,9 +6892,6 @@ export const MovesText: { [id: IDEntry]: MoveText } = {
 		name: "Thief",
 		desc: "If this attack was successful and the user has not fainted, it steals the target's held item if the user is not holding one. A target with the Sticky Hold Ability does not lose its held item if it has not fainted. The target's item is not stolen if it is a Blue Orb, Red Orb, Adamant Crystal, Lustrous Globe, Griseous Core, Plate, Drive, Memory, Rusted Sword, Rusted Shield, Booster Energy, or Mask held by a Kyogre, Groudon, Dialga, Palkia, Giratina, Arceus, Genesect, Silvally, Zacian, Zamazenta, Paradox Pokemon, or Ogerpon, respectively, or if the user is one of those species and the target is holding the respective item. In this case, Paradox Pokemon include every species with the Protosynthesis and Quark Drive Abilities, except Gouging Fire, Raging Bolt, Iron Boulder, and Iron Crown. Items lost to this move cannot be regained with Recycle or the Harvest Ability.",
 		shortDesc: "If the user has no item, it steals the target's.",
-		champions: {
-			desc: "If this attack was successful and the user is not holding an item, it steals the target's held item. A target with the Sticky Hold Ability does not lose its held item if it has not fainted. The target's item is not stolen if it is a Mega Stone and either the user or the target is the species that can Mega Evolve with it. Items lost to this move cannot be regained with Recycle or the Harvest Ability.",
-		},
 		gen8: {
 			desc: "If this attack was successful and the user has not fainted, it steals the target's held item if the user is not holding one. A target with the Sticky Hold Ability does not lose its held item if it has not fainted. The target's item is not stolen if it is a Blue Orb, Red Orb, Griseous Orb, Plate, Drive, Memory, Rusted Sword, or Rusted Shield held by a Kyogre, Groudon, Giratina, Arceus, Genesect, Silvally, Zacian, or Zamazenta, respectively, or if the user is one of those species and the target is holding the respective item. Items lost to this move cannot be regained with Recycle or the Harvest Ability.",
 		},
@@ -7149,10 +7084,6 @@ export const MovesText: { [id: IDEntry]: MoveText } = {
 		name: "Toxic Thread",
 		desc: "Lowers the target's Speed by 1 stage and poisons it.",
 		shortDesc: "Lowers the target's Speed by 1 and poisons it.",
-		champions: {
-			desc: "Lowers the target's Speed by 2 stages and poisons it.",
-			shortDesc: "Lowers the target's Speed by 2 and poisons it.",
-		},
 	},
 	trailblaze: {
 		name: "Trailblaze",
@@ -7192,9 +7123,6 @@ export const MovesText: { [id: IDEntry]: MoveText } = {
 		name: "Trick",
 		desc: "The user swaps its held item with the target's held item. Fails if both the user and the target have no held item, or if the user is trying to give or take a Blue Orb, Red Orb, Adamant Crystal, Lustrous Globe, Griseous Core, Plate, Drive, Memory, Rusted Sword, Rusted Shield, Booster Energy, or Mask to or from a Kyogre, Groudon, Dialga, Palkia, Giratina, Arceus, Genesect, Silvally, Zacian, Zamazenta, Paradox Pokemon, or Ogerpon, respectively. In this case, Paradox Pokemon include every species with the Protosynthesis and Quark Drive Abilities, except Gouging Fire, Raging Bolt, Iron Boulder, and Iron Crown. The target is immune to this move if it has the Sticky Hold Ability.",
 		shortDesc: "User switches its held item with the target's.",
-		champions: {
-			desc: "The user swaps its held item with the target's held item. Fails if both the user and the target have no held item, or if the user is trying to give or take a Mega Stone to or from the species that can Mega Evolve with it. The target is immune to this move if it has the Sticky Hold Ability.",
-		},
 		gen8: {
 			desc: "The user swaps its held item with the target's held item. Fails if both the user and the target have no held item, or if the user is trying to give or take a Blue Orb, Red Orb, Griseous Orb, Plate, Drive, Memory, Rusted Sword, or Rusted Shield to or from a Kyogre, Groudon, Giratina, Arceus, Genesect, Silvally, Zacian, or Zamazenta, respectively. The target is immune to this move if it has the Sticky Hold Ability.",
 		},

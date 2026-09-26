@@ -340,7 +340,6 @@ export class Pokemon {
 		this.gender = genders[set.gender] || this.species.gender || this.battle.sample(['M', 'F']);
 		if (this.gender === 'N') this.gender = '';
 		this.happiness = typeof set.happiness === 'number' ? this.battle.clampIntRange(set.happiness, 0, 255) : 255;
-		if (this.battle.format.mod === 'gen7letsgo') this.happiness = 70;
 		this.pokeball = toID(this.set.pokeball) || 'pokeball' as ID;
 		this.dynamaxLevel = typeof set.dynamaxLevel === 'number' ? this.battle.clampIntRange(set.dynamaxLevel, 0, 10) : 10;
 		this.gigantamax = this.set.gigantamax || false;
@@ -1182,7 +1181,7 @@ export class Pokemon {
 			entry.commanding = !!this.volatiles['commanding'] && !this.fainted;
 			entry.reviving = this.isActive && !!this.side.slotConditions[this.position]['revivalblessing'];
 		}
-		if (this.battle.gen === 9 && !this.battle.dex.currentMod.startsWith('champions')) {
+		if (this.battle.gen === 9) {
 			entry.teraType = this.teraType;
 			entry.terastallized = this.terastallized || '';
 		}
@@ -1276,13 +1275,6 @@ export class Pokemon {
 			(['Ogerpon', 'Terapagos'].includes(species.baseSpecies) && (this.terastallized || pokemon.terastallized)) ||
 			this.terastallized === 'Stellar'
 		) {
-			return false;
-		}
-
-		if (this.battle.dex.currentMod === 'gen1stadium' && (
-			species.name === 'Ditto' ||
-			(this.species.name === 'Ditto' && pokemon.moves.includes('transform'))
-		)) {
 			return false;
 		}
 
@@ -2063,15 +2055,6 @@ export class Pokemon {
 		let shared;
 		if (this.battle.reportExactHP) {
 			shared = secret;
-		} else if (this.battle.dex.currentMod.startsWith('champions')) {
-			// Pokemon Champions mechanics
-			const percentage = Math.floor(100 * this.hp / this.maxhp) || 1;
-			shared = `${percentage}/100`;
-			if (percentage === 20) {
-				shared += this.hp * 5 > this.maxhp ? 'y' : 'r';
-			} else if (percentage === 50) {
-				shared += this.hp * 2 > this.maxhp ? 'g' : 'y';
-			}
 		} else if (this.battle.reportPercentages || this.battle.gen >= 7) {
 			// HP Percentage Mod mechanics
 			let percentage = Math.ceil(100 * this.hp / this.maxhp);

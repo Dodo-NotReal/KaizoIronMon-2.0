@@ -566,22 +566,6 @@ export class DexSpecies {
 				species.natDexTier = 'Illegal';
 				species.isNonstandard = 'Future';
 			}
-			if (this.dex.currentMod === 'gen7letsgo' && !species.isNonstandard) {
-				const isLetsGo = (
-					species.gen <= 7 && (species.num <= 151 || ['Meltan', 'Melmetal'].includes(species.name)) &&
-					(!species.forme || species.isMega || (['Alola', 'Starter'].includes(species.forme) &&
-						species.name !== 'Pikachu-Alola'))
-				);
-				if (!isLetsGo) species.isNonstandard = 'Past';
-			}
-			if (this.dex.currentMod === 'gen8bdsp' &&
-				(!species.isNonstandard || species.isNonstandard === 'CAP')) {
-				if (species.gen > 4 || (species.num < 1 && species.isNonstandard !== 'CAP') ||
-					species.id === 'pichuspikyeared') {
-					species.isNonstandard = 'Future';
-					species.tier = species.doublesTier = species.natDexTier = 'Illegal';
-				}
-			}
 			species.nfe = species.evos.some(evo => {
 				const evoSpecies = this.get(evo);
 				return !evoSpecies.isNonstandard ||
@@ -745,7 +729,6 @@ export class DexSpecies {
 		} else if (species.prevo) {
 			// there used to be a check for Hidden Ability here, but apparently it's unnecessary
 			// Shed Skin Pupitar can definitely evolve into Unnerve Tyranitar
-			if (this.dex.currentMod.startsWith('champions')) return null;
 			species = this.get(species.prevo);
 			if (species.gen > Math.max(2, this.dex.gen)) return null;
 			return species;

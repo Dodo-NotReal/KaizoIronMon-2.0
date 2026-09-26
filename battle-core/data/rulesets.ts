@@ -1672,9 +1672,7 @@ export const Rulesets: import('../sim/dex-formats').FormatDataTable = {
 			if (!nonstandard && !move.isZ && !move.isMax && !this.ruleTable.isRestricted(`move:${move.id}`)) {
 				const speciesTypes: string[] = [];
 				const moveTypes: string[] = [];
-				// BDSP can't import Pokemon from Home, so it shouldn't grant moves from archaic species types
-				const minObtainableSpeciesGen = this.dex.currentMod === 'gen8bdsp' ||
-					(this.dex.gen === 9 && !this.ruleTable.has('natdexmod')) ?
+				const minObtainableSpeciesGen = this.dex.gen === 9 && !this.ruleTable.has('natdexmod') ?
 					this.dex.gen : species.gen;
 				for (let i = this.dex.gen; i >= minObtainableSpeciesGen && i >= move.gen; i--) {
 					const dex = this.dex.forGen(i);
@@ -1791,13 +1789,6 @@ export const Rulesets: import('../sim/dex-formats').FormatDataTable = {
 		name: 'Allow Tradeback',
 		desc: "Allows Gen 1 pokemon to have moves from their Gen 2 learnsets",
 		// Implemented in team-validator.js
-	},
-	lgpenormalrules: {
-		effectType: 'ValidatorRule',
-		name: 'LGPE Normal Rules',
-		desc: "Tells formats with the 'gen7letsgo' mod to set the level to 50 and all Awakening Values to 0",
-		ruleset: ['Adjust Level = 50'],
-		// AVs implemented in TeamValidator#validateStats
 	},
 	nfeclause: {
 		effectType: 'ValidatorRule',
@@ -2182,36 +2173,6 @@ export const Rulesets: import('../sim/dex-formats').FormatDataTable = {
 		hasValue: 'positive-integer',
 		mutuallyExclusiveWith: 'adjustlevel',
 		// hardcoded in sim/team-validator
-	},
-	stadiumitemsclause: {
-		effectType: 'ValidatorRule',
-		name: 'Stadium Items Clause',
-		desc: "Bans items that are not usable in Pokemon Stadium 2.",
-		banlist: ['Fast Ball', 'Friend Ball', 'Great Ball', 'Heavy Ball', 'Level Ball', 'Love Ball', 'Lure Ball', 'Master Ball', 'Moon Ball', 'Park Ball', 'Poke Ball', 'Safari Ball', 'Ultra Ball', 'Fire Stone', 'Leaf Stone', 'Moon Stone', 'Sun Stone', 'Thunder Stone', 'Upgrade', 'Water Stone', 'Mail'],
-	},
-	nc2000movelegality: {
-		effectType: 'ValidatorRule',
-		name: "NC 2000 Move Legality",
-		desc: "Prevents Pok\u00e9mon from having moves that would only be obtainable in Pok\u00e9mon Crystal.",
-		// Implemented in mods/gen2/rulesets.ts
-	},
-	aptclause: {
-		effectType: 'ValidatorRule',
-		name: 'APT Clause',
-		desc: "Bans the combination of Agility and partial trapping moves like Wrap.",
-		banlist: ['Agility + Wrap', 'Agility + Fire Spin', 'Agility + Bind', 'Agility + Clamp'],
-	},
-	nc1997movelegality: {
-		effectType: 'ValidatorRule',
-		name: "NC 1997 Move Legality",
-		desc: "Bans move combinations on Pok\u00e9mon that weren't legal in NC 1997.",
-		// Implemented in mods/gen1jpn/rulesets.ts
-	},
-	stadiumpokecuprentals: {
-		effectType: 'ValidatorRule',
-		name: "Stadium Poke Cup Rentals",
-		desc: `Enforces Stadium Pok&eacute; Cup Rentals legality`,
-		// Implemented in mods/gen1stadium/rulesets.ts
 	},
 	noswitching: {
 		effectType: 'Rule',
@@ -2919,55 +2880,6 @@ export const Rulesets: import('../sim/dex-formats').FormatDataTable = {
 		},
 		// Implemented in Pokemon#getDetails
 	},
-	allowedpokemoves: {
-		effectType: 'ValidatorRule',
-		name: "Allowed Pokemoves",
-		desc: "Allows players to define the amount of Pokemoves allowed per set.",
-		hasValue: 'positive-integer',
-		onValidateRule(value) {
-			const num = Number(value);
-			if (num > this.ruleTable.maxMoveCount || num < 1) {
-				throw new Error(`Allowed Pokemoves must be between 1 and ${this.ruleTable.maxMoveCount}.`);
-			}
-			return value;
-		},
-		// Validation in the Pokemoves format
-	},
-	uniquepokemoves: {
-		effectType: 'ValidatorRule',
-		name: "Unique Pokemoves",
-		desc: "Allows players to define how many times a Pokemon can be used as a Pokemove per team.",
-		hasValue: 'positive-integer',
-		onValidateRule(value) {
-			const num = Number(value);
-			if (num > this.ruleTable.maxMoveCount || num < 1) {
-				throw new Error(`Unique Pokemoves must be between 1 and ${this.ruleTable.maxMoveCount}.`);
-			}
-			return value;
-		},
-		onValidateTeam(team, format, teamHas) {
-			const pokemoves = new this.dex.Multiset<ID>();
-			for (const set of team) {
-				if (set.moves?.length) {
-					for (const moveid of set.moves) {
-						const pokemove = this.dex.species.get(moveid);
-						if (!pokemove.exists) continue;
-						pokemoves.add(pokemove.id);
-					}
-				}
-			}
-			const problems: string[] = [];
-			const uniquePokemoves = Number(this.ruleTable.valueRules.get('uniquepokemoveclause') || 1);
-			for (const [moveid, num] of pokemoves) {
-				if (num <= uniquePokemoves) continue;
-				problems.push(
-					`You have ${num} Pok\u00e9mon with ${this.dex.species.get(moveid).name} as a Pokemove.`,
-					`(Each Pok\u00e9mon can only be used as a Pokemove ${uniquePokemoves} time${uniquePokemoves === 1 ? '' : 's'} per team.)`
-				);
-			}
-			return problems;
-		},
-	},
 	ferventimpersonationmod: {
 		effectType: 'Rule',
 		name: "Fervent Impersonation Mod",
@@ -3027,12 +2939,6 @@ export const Rulesets: import('../sim/dex-formats').FormatDataTable = {
 		name: "Twisted Dimension Mod",
 		desc: `The effects of Trick Room are always active, using Trick Room reverts the field to normal for 5 turns.`,
 		// implemented in Pokemon#getActionSpeed()
-	},
-	mixandmegaoldaggronite: {
-		effectType: 'Rule',
-		name: "Mix and Mega Old Aggronite",
-		desc: `Causes Aggronite to no longer give the Steel type in Mix and Mega.`,
-		// implemented in mods/mixandmega/scripts.ts
 	},
 	badnboostedmod: {
 		effectType: 'Rule',

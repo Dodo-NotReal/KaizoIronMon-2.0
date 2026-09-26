@@ -67,14 +67,14 @@ The wrapper submits the supplied order automatically during Team Preview. Set `a
 
 ## Generations and formats
 
-Set `format` to `gen1ou`, `gen2ou`, ..., `gen9ou` to switch generations. The original Dex loads the appropriate mod, including its inheritance chain and original battle mechanics. The included format list contains 293 formats from the pinned upstream revision that accept manually supplied teams. Inspect them with:
+Set `format` to `gen1ou`, `gen2ou`, ..., `gen9ou` to switch generations. The original Dex loads the appropriate mod, including its inheritance chain and original battle mechanics. The included format list contains 234 formats from the pinned upstream revision that accept manually supplied teams and use only the main Gen 1–9 mods. Inspect them with:
 
 ```js
 const { Dex } = require('./dist');
 console.log(Dex.formats.all().map(format => format.id));
 ```
 
-Random Battle and factory formats are unavailable. The simulator still uses its normal PRNG for accuracy, critical hits, damage rolls and other battle mechanics.
+Historical variant and dedicated special mods and their associated formats have been removed. Random Battle and factory formats are also unavailable. The simulator still uses its normal PRNG for accuracy, critical hits, damage rolls and other battle mechanics.
 
 `BattleEngine` accepts two-player formats. Some retained manual-team formats use more players; use the raw `BattleStream` with all required player slots for those.
 
@@ -110,7 +110,7 @@ Gen 9 OU begins with Team Preview, so the raw stream needs `team` choices before
 ```text
 battle-core/
   sim/             Battle, BattleStream, Dex, Teams, validation and mechanics
-  data/            battle data, English text and required generation/format mods
+  data/            battle data, English text and eight generation mods
   lib/             stream and utility helpers only
   config/          manual-team format catalog
 battle-text/        MIT-licensed BattleTextParser with English tables
@@ -121,7 +121,7 @@ licenses/           upstream license copies
 ```
 
 The simulator's `sim`, data tables and mod inheritance remain based on the original implementation. See [ARCHITECTURE.md](ARCHITECTURE.md) for dependency and removal details.
-For the purpose, parent mod and linked formats of each folder in `data/mods/`, see [MODS.md](MODS.md).
+For the purpose, parent mod and linked formats of each remaining folder in `data/mods/`, see [MODS.md](MODS.md).
 
 ## License and attribution
 

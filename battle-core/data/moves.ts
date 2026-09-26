@@ -9272,8 +9272,7 @@ export const Moves: import('../sim/dex-moves').MoveDataTable = {
 				iceballData &&
 				iceballData.hitCount === 5 &&
 				iceballData.contactHitCount < 5
-				// this conditions can only be met in gen7 and gen8dlc1
-				// see `disguise` and `iceface` abilities in the resp mod folders
+				// This can occur when Disguise or Ice Face interrupts the sequence.
 			) {
 				source.addVolatile("rolloutstorage");
 				source.volatiles["rolloutstorage"].contactHitCount =
@@ -15399,8 +15398,7 @@ export const Moves: import('../sim/dex-moves').MoveDataTable = {
 				rolloutData &&
 				rolloutData.hitCount === 5 &&
 				rolloutData.contactHitCount < 5
-				// this conditions can only be met in gen7 and gen8dlc1
-				// see `disguise` and `iceface` abilities in the resp mod folders
+				// This can occur when Disguise or Ice Face interrupts the sequence.
 			) {
 				source.addVolatile("rolloutstorage");
 				source.volatiles["rolloutstorage"].contactHitCount =
