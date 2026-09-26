@@ -121,6 +121,7 @@ licenses/           upstream license copies
 ```
 
 The simulator's `sim`, data tables and mod inheritance remain based on the original implementation. See [ARCHITECTURE.md](ARCHITECTURE.md) for dependency and removal details.
+For the purpose, parent mod and linked formats of each folder in `data/mods/`, see [MODS.md](MODS.md).
 
 ## License and attribution
 
