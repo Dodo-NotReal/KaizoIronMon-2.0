@@ -54,10 +54,6 @@ export const Tags: { [id: IDEntry]: TagData } = {
 		name: "Paradox",
 		speciesFilter: species => species.tags.includes("Paradox"),
 	},
-	pokestar: {
-		name: "Pokestar",
-		speciesFilter: species => species.tags.includes("Pokestar"),
-	},
 
 	// Move tags
 	// ---------
@@ -174,10 +170,6 @@ export const Tags: { [id: IDEntry]: TagData } = {
 	unobtainable: {
 		name: "Unobtainable",
 		genericFilter: thing => thing.isNonstandard === 'Unobtainable',
-	},
-	cap: {
-		name: "CAP",
-		genericFilter: thing => thing.isNonstandard === 'CAP',
 	},
 	custom: {
 		name: "Custom",

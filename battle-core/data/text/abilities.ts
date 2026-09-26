@@ -2292,23 +2292,4 @@ export const AbilitiesText: { [id: IDEntry]: AbilityText } = {
 		activate: "  {POKEMON} underwent a heroic transformation!",
 	},
 
-	// CAP
-	mountaineer: {
-		name: "Mountaineer",
-		shortDesc: "On switch-in, this Pokemon avoids all Rock-type attacks and Stealth Rock.",
-	},
-	rebound: {
-		name: "Rebound",
-		desc: "On switch-in, this Pokemon blocks certain status moves and instead uses the move against the original user.",
-		shortDesc: "On switch-in, blocks certain status moves and bounces them back to the user.",
-
-		move: "#magiccoat",
-	},
-	persistent: {
-		name: "Persistent",
-		desc: "The duration of Gravity, Heal Block, Magic Room, Safeguard, Tailwind, Trick Room, and Wonder Room is increased by 2 turns if the effect is started by this Pokemon.",
-		shortDesc: "When used, Gravity/Heal Block/Safeguard/Tailwind/Room effects last 2 more turns.",
-
-		activate: "  {POKEMON} extends {MOVE} by 2 turns!",
-	},
 };

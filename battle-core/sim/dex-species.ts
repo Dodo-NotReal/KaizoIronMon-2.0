@@ -559,8 +559,7 @@ export class DexSpecies {
 	 * @param isNatDex
 	 * @returns a Set of IDs of the full valid movepool of the given species for the current generation/mod.
 	 * Note that inter-move incompatibilities, such as those from exclusive events, are not considered and all moves are
-	 * lumped together. However, Necturna and Necturine's Sketchable moves are omitted from this pool, as their fundamental
-	 * incompatibility with each other is essential to the nature of those species.
+	 * lumped together.
 	 */
 	getMovePool(id: ID, isNatDex = false): Set<ID> {
 		let eggMovesOnly = false;
@@ -571,18 +570,16 @@ export class DexSpecies {
 		for (const { species, learnset } of this.getFullLearnset(id)) {
 			if (!eggMovesOnly) eggMovesOnly = this.eggMovesOnly(species, this.get(id));
 			for (const moveid in learnset) {
-				if (species.isNonstandard !== 'CAP') {
-					if (gen4HMMoves.includes(moveid) && this.dex.gen >= 5) {
-						if (!learnset[moveid].some(source => parseInt(source.charAt(0)) >= 5 &&
-							parseInt(source.charAt(0)) <= this.dex.gen)) continue;
-					} else if (
-						gen3HMMoves.includes(moveid) && this.dex.gen >= 4 &&
-						!learnset[moveid].some(
-							source => parseInt(source.charAt(0)) >= 4 && parseInt(source.charAt(0)) <= this.dex.gen
-						)
-					) {
-						continue;
-					}
+				if (gen4HMMoves.includes(moveid) && this.dex.gen >= 5) {
+					if (!learnset[moveid].some(source => parseInt(source.charAt(0)) >= 5 &&
+						parseInt(source.charAt(0)) <= this.dex.gen)) continue;
+				} else if (
+					gen3HMMoves.includes(moveid) && this.dex.gen >= 4 &&
+					!learnset[moveid].some(
+						source => parseInt(source.charAt(0)) >= 4 && parseInt(source.charAt(0)) <= this.dex.gen
+					)
+				) {
+					continue;
 				}
 				if (eggMovesOnly) {
 					if (learnset[moveid].some(source => source.startsWith('9E'))) {
@@ -599,12 +596,6 @@ export class DexSpecies {
 					}
 				}
 				if (moveid === 'sketch' && movePool.has('sketch' as ID)) {
-					if (species.isNonstandard === 'CAP') {
-						// Given what this function is generally used for, adding all sketchable moves to Necturna and Necturine's
-						// movepools would be undesirable as it would be impossible to tell sketched moves apart from normal ones
-						// so any code calling this one will need to get and handle those moves separately themselves
-						continue;
-					}
 					// Smeargle time
 					// A few moves like Dark Void were made unSketchable in a generation later than when they were introduced
 					// However, this has only happened in a gen where transfer moves are unavailable

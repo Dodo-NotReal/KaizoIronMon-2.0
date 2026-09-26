@@ -16,6 +16,7 @@ The Dex loads battle tables dynamically by filename (`Abilities`, `Rulesets`, `F
 - Generator-only mod folders: `afd`, `chatbats`, `gen8legends`, `gen9legends`, `gen9mnmlimitedsupply`, `gen9ssb`, `monkeyspaw`, `randomroulette`.
 - Historical variant and dedicated special mod folders, their associated formats, and their dedicated simulator and text branches.
 - Competitive format definitions, ruleset callbacks, tier tags and tier fields (`tier`, `doublesTier`, `natDexTier`).
+- Fictional species with negative Pokédex numbers, their learnsets, text, aliases, availability entries and exclusive effects.
 - `Teams.getGenerator`, `Teams.generate`, `Battle.teamGenerator`, the generator fallback in `Battle.getTeam`, generator validation and the unused `RandomTeamsTypes` definitions.
 - Random Battle aliases and the generator-only `PotD` rule.
 - `sim/tools/` including RandomPlayerAI; server, database, matchmaking, replay viewer, UI, graphics, audio, translations and client Dex.

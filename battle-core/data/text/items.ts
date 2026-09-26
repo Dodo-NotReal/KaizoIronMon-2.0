@@ -2611,14 +2611,5 @@ export const ItemsText: { [id: IDEntry]: ItemText } = {
 		shortDesc: "(Gen 2) Holder is cured if it is poisoned. Single use.",
 	},
 
-	// CAP items
 
-	crucibellite: {
-		name: "Crucibellite",
-		shortDesc: "If held by a Crucibelle, this item allows it to Mega Evolve in battle.",
-	},
-	vilevial: {
-		name: "Vile Vial",
-		shortDesc: "If held by a Venomicon, its Poison- and Flying-type attacks have 1.2× power.",
-	},
 };

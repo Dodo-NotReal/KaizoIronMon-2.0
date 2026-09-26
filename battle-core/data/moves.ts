@@ -7757,19 +7757,8 @@ export const Moves: import('../sim/dex-moves').MoveDataTable = {
 		pseudoWeather: 'gravity',
 		condition: {
 			duration: 5,
-			durationCallback(source, effect) {
-				if (source?.hasAbility('persistent')) {
-					this.add('-activate', source, 'ability: Persistent', '[move] Gravity');
-					return 7;
-				}
-				return 5;
-			},
 			onFieldStart(target, source) {
-				if (source?.hasAbility('persistent')) {
-					this.add('-fieldstart', 'move: Gravity', '[persistent]');
-				} else {
-					this.add('-fieldstart', 'move: Gravity');
-				}
+				this.add('-fieldstart', 'move: Gravity');
 				for (const pokemon of this.getAllActive()) {
 					let applies = false;
 					if (pokemon.removeVolatile('bounce') || pokemon.removeVolatile('fly')) {
@@ -8280,10 +8269,6 @@ export const Moves: import('../sim/dex-moves').MoveDataTable = {
 			durationCallback(target, source, effect) {
 				if (effect?.name === "Psychic Noise") {
 					return 2;
-				}
-				if (source?.hasAbility('persistent')) {
-					this.add('-activate', source, 'ability: Persistent', '[move] Heal Block');
-					return 7;
 				}
 				return 5;
 			},
@@ -10753,19 +10738,8 @@ export const Moves: import('../sim/dex-moves').MoveDataTable = {
 		pseudoWeather: 'magicroom',
 		condition: {
 			duration: 5,
-			durationCallback(source, effect) {
-				if (source?.hasAbility('persistent')) {
-					this.add('-activate', source, 'ability: Persistent', '[move] Magic Room');
-					return 7;
-				}
-				return 5;
-			},
 			onFieldStart(target, source) {
-				if (source?.hasAbility('persistent')) {
-					this.add('-fieldstart', 'move: Magic Room', `[of] ${source}`, '[persistent]');
-				} else {
-					this.add('-fieldstart', 'move: Magic Room', `[of] ${source}`);
-				}
+				this.add('-fieldstart', 'move: Magic Room', `[of] ${source}`);
 				for (const mon of this.getAllActive()) {
 					this.singleEvent('End', mon.getItem(), mon.itemState, mon);
 				}
@@ -15572,13 +15546,6 @@ export const Moves: import('../sim/dex-moves').MoveDataTable = {
 		sideCondition: 'safeguard',
 		condition: {
 			duration: 5,
-			durationCallback(target, source, effect) {
-				if (source?.hasAbility('persistent')) {
-					this.add('-activate', source, 'ability: Persistent', '[move] Safeguard');
-					return 7;
-				}
-				return 5;
-			},
 			onSetStatus(status, target, source, effect) {
 				if (!effect || !source) return;
 				if (effect.id === 'yawn') return;
@@ -15600,11 +15567,7 @@ export const Moves: import('../sim/dex-moves').MoveDataTable = {
 				}
 			},
 			onSideStart(side, source) {
-				if (source?.hasAbility('persistent')) {
-					this.add('-sidestart', side, 'Safeguard', '[persistent]');
-				} else {
-					this.add('-sidestart', side, 'Safeguard');
-				}
+				this.add('-sidestart', side, 'Safeguard');
 			},
 			onSideResidualOrder: 26,
 			onSideResidualSubOrder: 3,
@@ -18872,19 +18835,8 @@ export const Moves: import('../sim/dex-moves').MoveDataTable = {
 		sideCondition: 'tailwind',
 		condition: {
 			duration: 4,
-			durationCallback(target, source, effect) {
-				if (source?.hasAbility('persistent')) {
-					this.add('-activate', source, 'ability: Persistent', '[move] Tailwind');
-					return 6;
-				}
-				return 4;
-			},
 			onSideStart(side, source) {
-				if (source?.hasAbility('persistent')) {
-					this.add('-sidestart', side, 'move: Tailwind', '[persistent]');
-				} else {
-					this.add('-sidestart', side, 'move: Tailwind');
-				}
+				this.add('-sidestart', side, 'move: Tailwind');
 			},
 			onModifySpe(spe, pokemon) {
 				return this.chainModify(2);
@@ -19937,19 +19889,8 @@ export const Moves: import('../sim/dex-moves').MoveDataTable = {
 		pseudoWeather: 'trickroom',
 		condition: {
 			duration: 5,
-			durationCallback(source, effect) {
-				if (source?.hasAbility('persistent')) {
-					this.add('-activate', source, 'ability: Persistent', '[move] Trick Room');
-					return 7;
-				}
-				return 5;
-			},
 			onFieldStart(target, source) {
-				if (source?.hasAbility('persistent')) {
-					this.add('-fieldstart', 'move: Trick Room', `[of] ${source}`, '[persistent]');
-				} else {
-					this.add('-fieldstart', 'move: Trick Room', `[of] ${source}`);
-				}
+				this.add('-fieldstart', 'move: Trick Room', `[of] ${source}`);
 			},
 			onFieldRestart(target, source) {
 				this.field.removePseudoWeather('trickroom');
@@ -20966,13 +20907,6 @@ export const Moves: import('../sim/dex-moves').MoveDataTable = {
 		pseudoWeather: 'wonderroom',
 		condition: {
 			duration: 5,
-			durationCallback(source, effect) {
-				if (source?.hasAbility('persistent')) {
-					this.add('-activate', source, 'ability: Persistent', '[move] Wonder Room');
-					return 7;
-				}
-				return 5;
-			},
 			onModifyMove(move, source, target) {
 				// This code is for moves that use defensive stats as the attacking stat; see below for most of the implementation
 				if (!move.overrideOffensiveStat) return;
@@ -20982,11 +20916,7 @@ export const Moves: import('../sim/dex-moves').MoveDataTable = {
 				this.hint(`${move.name} uses ${statAndBoosts === 'def' ? '' : 'Sp. '}Def boosts when Wonder Room is active.`);
 			},
 			onFieldStart(field, source) {
-				if (source?.hasAbility('persistent')) {
-					this.add('-fieldstart', 'move: Wonder Room', `[of] ${source}`, '[persistent]');
-				} else {
-					this.add('-fieldstart', 'move: Wonder Room', `[of] ${source}`);
-				}
+				this.add('-fieldstart', 'move: Wonder Room', `[of] ${source}`);
 			},
 			onFieldRestart(target, source) {
 				this.field.removePseudoWeather('wonderroom');
@@ -21220,72 +21150,5 @@ export const Moves: import('../sim/dex-moves').MoveDataTable = {
 		target: "normal",
 		type: "Electric",
 		contestType: "Cool",
-	},
-
-	// CAP moves
-
-	paleowave: {
-		num: -1,
-		accuracy: 100,
-		basePower: 85,
-		category: "Special",
-		isNonstandard: "CAP",
-		name: "Paleo Wave",
-		pp: 15,
-		priority: 0,
-		flags: { protect: 1, mirror: 1 },
-		secondary: {
-			chance: 20,
-			boosts: {
-				atk: -1,
-			},
-		},
-		target: "normal",
-		type: "Rock",
-		contestType: "Beautiful",
-	},
-	shadowstrike: {
-		num: -2,
-		accuracy: 95,
-		basePower: 80,
-		category: "Physical",
-		isNonstandard: "CAP",
-		name: "Shadow Strike",
-		pp: 10,
-		priority: 0,
-		flags: { contact: 1, protect: 1, mirror: 1 },
-		secondary: {
-			chance: 50,
-			boosts: {
-				def: -1,
-			},
-		},
-		target: "normal",
-		type: "Ghost",
-		contestType: "Clever",
-	},
-	polarflare: {
-		num: -3,
-		accuracy: 100,
-		basePower: 75,
-		category: "Special",
-		isNonstandard: "CAP",
-		name: "Polar Flare",
-		pp: 10,
-		priority: 0,
-		flags: { protect: 1, mirror: 1, defrost: 1, nosketch: 1 },
-		secondary: {
-			chance: 10,
-			status: 'frz',
-		},
-		onAfterMoveSecondarySelf(pokemon) {
-			if (pokemon.baseSpecies.baseSpecies === 'Ramnarok' && !pokemon.transformed) {
-				const forme = pokemon.species.id === 'ramnarokradiant' ? '' : '-Radiant';
-				pokemon.formeChange('Ramnarok' + forme, this.effect, false, '0', '[msg]');
-			}
-		},
-		target: "allAdjacentFoes",
-		type: "Fire",
-		contestType: "Beautiful",
 	},
 };

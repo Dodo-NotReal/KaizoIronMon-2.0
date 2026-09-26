@@ -4594,11 +4594,6 @@ export const MovesText: { [id: IDEntry]: MoveText } = {
 
 		activate: "  The battlers shared their pain!",
 	},
-	paleowave: {
-		name: "Paleo Wave",
-		desc: "Has a 20% chance to lower the target's Attack by 1 stage.",
-		shortDesc: "20% chance to lower the target's Attack by 1.",
-	},
 	paraboliccharge: {
 		name: "Parabolic Charge",
 		desc: "The user recovers 1/2 the HP lost by the target, rounded half up. If Big Root is held by the user, the HP recovered is 1.3× normal, rounded half down.",
@@ -4774,11 +4769,6 @@ export const MovesText: { [id: IDEntry]: MoveText } = {
 		name: "Poison Tail",
 		desc: "Has a 10% chance to poison the target and a higher chance for a critical hit.",
 		shortDesc: "High critical hit ratio. 10% chance to poison.",
-	},
-	polarflare: {
-		name: "Polar Flare",
-		desc: "Has a 10% chance to freeze the target. This move cannot thaw a frozen target. If this move is successful on at least one target and the user is a Ramnarok, it changes to Radiant Forme if it is currently in Dormant Forme, or changes to Dormant Forme if it is currently in Radiant Forme. This forme change does not happen if the Ramnarok has the Sheer Force Ability. The Radiant Forme reverts to Dormant Forme when Ramnarok is not active.",
-		shortDesc: "10% chance to frz foe(s). Ramnarok transforms.",
 	},
 	pollenpuff: {
 		name: "Pollen Puff",
@@ -5697,11 +5687,6 @@ export const MovesText: { [id: IDEntry]: MoveText } = {
 		name: "Shadow Sneak",
 		desc: "No additional effect.",
 		shortDesc: "Usually goes first.",
-	},
-	shadowstrike: {
-		name: "Shadow Strike",
-		desc: "Has a 50% chance to lower the target's Defense by 1 stage.",
-		shortDesc: "50% chance to lower the target's Defense by 1.",
 	},
 	sharpen: {
 		name: "Sharpen",

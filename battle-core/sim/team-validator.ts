@@ -13,7 +13,7 @@ import { Utils } from '../lib/utils';
 import { Tags } from '../data/tags';
 import { type RuleTable } from './dex-formats';
 
-const EXISTENCE_TAGS = ['past', 'future', 'lgpe', 'unobtainable', 'cap', 'custom', 'nonexistent'];
+const EXISTENCE_TAGS = ['past', 'future', 'lgpe', 'unobtainable', 'custom', 'nonexistent'];
 
 /**
  * Describes a possible way to get a pokemon. Is not exhaustive!
@@ -1440,7 +1440,7 @@ export class TeamValidator {
 
 		// try to find a father to inherit the egg move combination from
 		for (const father of dex.species.all()) {
-			// can't inherit from CAP pokemon
+			// Skip nonstandard species when searching for an egg-move parent.
 			if (father.isNonstandard) continue;
 			// can't breed mons from future gens
 			if (father.gen > eggGen) continue;
@@ -1824,7 +1824,7 @@ export class TeamValidator {
 			if (!tagMatches) continue;
 			const existenceTag = typeof match === 'string' && EXISTENCE_TAGS.includes(match as string);
 			if (type === '+') {
-				// We want rules like +CAP or +Past to trump -Nonexistent, but most tags shouldn't.
+				// Existence tags such as +Past can trump -Nonexistent, but most tags cannot.
 				if (!existenceTag && nonexistentCheck) continue;
 				return null;
 			}
@@ -1858,9 +1858,6 @@ export class TeamValidator {
 			}
 			if (thing.isNonstandard === 'Past' || thing.isNonstandard === 'Future') {
 				return `${displayName} does not exist in Gen ${dex.gen}.`;
-			}
-			if (thing.isNonstandard === 'CAP') {
-				return `${displayName} is made up for Smogon CAP and does not exist in this game.`;
 			}
 			if (thing.isNonstandard === 'LGPE') {
 				return `${displayName} does not exist in this game, only in Let's Go Pikachu/Eevee.`;
@@ -2597,23 +2594,21 @@ export class TeamValidator {
 					continue;
 				}
 
-				if (species.isNonstandard !== 'CAP') {
-					// HMs can't be transferred
-					if (dex.gen >= 4 && learnedGen <= 3 && [
-						'cut', 'fly', 'surf', 'strength', 'flash', 'rocksmash', 'waterfall', 'dive',
-					].includes(moveid)) {
-						cantLearnReason = `can't be transferred from Gen 3 to 4 because it's an HM move.`;
-						continue;
-					}
-					if (dex.gen >= 5 && learnedGen <= 4 && [
-						'cut', 'fly', 'surf', 'strength', 'rocksmash', 'waterfall', 'rockclimb',
-					].includes(moveid)) {
-						cantLearnReason = `can't be transferred from Gen 4 to 5 because it's an HM move.`;
-						continue;
-					}
-					// Defog and Whirlpool can't be transferred together
-					if (dex.gen >= 5 && ['defog', 'whirlpool'].includes(moveid) && learnedGen <= 4) blockedHM = true;
+				// HMs can't be transferred
+				if (dex.gen >= 4 && learnedGen <= 3 && [
+					'cut', 'fly', 'surf', 'strength', 'flash', 'rocksmash', 'waterfall', 'dive',
+				].includes(moveid)) {
+					cantLearnReason = `can't be transferred from Gen 3 to 4 because it's an HM move.`;
+					continue;
 				}
+				if (dex.gen >= 5 && learnedGen <= 4 && [
+					'cut', 'fly', 'surf', 'strength', 'rocksmash', 'waterfall', 'rockclimb',
+				].includes(moveid)) {
+					cantLearnReason = `can't be transferred from Gen 4 to 5 because it's an HM move.`;
+					continue;
+				}
+				// Defog and Whirlpool can't be transferred together
+				if (dex.gen >= 5 && ['defog', 'whirlpool'].includes(moveid) && learnedGen <= 4) blockedHM = true;
 
 				if (learned.charAt(1) === 'L') {
 					// special checking for level-up moves

@@ -91,7 +91,7 @@ export abstract class BasicEffect implements EffectData {
 	 * Dex number? For a Pokemon, this is the National Dex number. For
 	 * other effects, this is often an internal ID (e.g. a move
 	 * number). Not all effects have numbers, this will be 0 if it
-	 * doesn't. Nonstandard effects (e.g. CAP effects) will have
+	 * doesn't. Nonstandard effects will have
 	 * negative numbers.
 	 */
 	num: number;
@@ -103,8 +103,7 @@ export abstract class BasicEffect implements EffectData {
 	gen: number;
 	/**
 	 * Is this item/move/ability/pokemon nonstandard? Specified for effects
-	 * that have no use in standard formats: made-up pokemon (CAP),
-	 * glitches (MissingNo etc), Pokestar pokemon, etc.
+	 * that have no use in standard formats: glitches (MissingNo etc).
 	 */
 	isNonstandard: Nonstandard | null;
 	/** For Hidden Power and Gigantamax forms - see NONSTANDARD.md */

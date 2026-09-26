@@ -1364,13 +1364,6 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		condition: {
 			inherit: true,
 			duration: 3,
-			durationCallback(target, source, effect) {
-				if (source?.hasAbility('persistent')) {
-					this.add('-activate', source, 'ability: Persistent', '[move] Tailwind');
-					return 5;
-				}
-				return 3;
-			},
 			onModifySpe(spe) {
 				return spe * 2;
 			},

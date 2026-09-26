@@ -90,7 +90,7 @@ test('visible HP follows the generation protocol', () => {
 			p1: { name: 'Alice', team: teams.p1 },
 			p2: { name: 'Bob', team: teams.p2 },
 		});
-		engine.choose('p1', 'move 1');
+		engine.choose('p1', 'move 2');
 		engine.choose('p2', 'move 1');
 		const damage = engine.events.find(event => event.line.startsWith('|-damage|'))?.line;
 		assert.match(damage || '', new RegExp(`\\d+/${denominator}(?:[| ]|$)`), `gen${gen}`);
@@ -122,6 +122,16 @@ test('Dex species metadata and generation inheritance survive without tiers', ()
 	assert.equal(future.exists, true);
 	assert.equal(future.gen, 4);
 	assert.equal(future.isNonstandard, 'Future');
+});
+
+test('species tables have no negative numbers and preserve real forms', () => {
+	for (let gen = 1; gen <= 9; gen++) {
+		const dex = Dex.mod(`gen${gen}`);
+		assert.ok(dex.species.all().every(species => species.num >= 0), `gen${gen}`);
+	}
+	for (const name of ['Smeargle', 'Pikachu-Rock-Star', 'Charizard-Mega-X']) {
+		assert.equal(Dex.species.get(name).exists, true, name);
+	}
 });
 
 test('switching, fainting and victory work in every Link Battle generation', () => {

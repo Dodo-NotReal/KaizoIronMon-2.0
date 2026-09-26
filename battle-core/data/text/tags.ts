@@ -35,9 +35,6 @@ export const TagsText: { [id: string]: TagText } = {
 	paradox: {
 		name: "Paradox",
 	},
-	pokestar: {
-		name: "Pokestar",
-	},
 	zmove: {
 		name: "Z-Move",
 	},
@@ -163,17 +160,13 @@ export const TagsText: { [id: string]: TagText } = {
 		name: "Unobtainable",
 		desc: "Exists in game data but not obtainable without hacking.",
 	},
-	cap: {
-		name: "CAP",
-		desc: "Made up for the Smogon Create-A-Pokemon project.",
-	},
 	custom: {
 		name: "Custom",
 		desc: "Made up for... something or other. I don't recommend using this, it's not tagged very consistently.",
 	},
 	nonexistent: {
 		name: "Nonexistent",
-		desc: "Does not exist in game data. Includes Past, Future, LGPE, CAP, and Custom.",
+		desc: "Does not exist in game data. Includes Past, Future, LGPE, and Custom.",
 	},
 
 	// numeric tags

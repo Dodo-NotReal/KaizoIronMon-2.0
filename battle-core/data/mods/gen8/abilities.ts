@@ -1213,16 +1213,4 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		inherit: true,
 		rating: 0,
 	},
-	mountaineer: {
-		inherit: true,
-		rating: 3,
-	},
-	rebound: {
-		inherit: true,
-		rating: 3,
-	},
-	persistent: {
-		inherit: true,
-		rating: 3,
-	},
 };
