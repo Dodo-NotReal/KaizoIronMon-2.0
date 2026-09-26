@@ -220,9 +220,6 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 			} else {
 				success = !!this.heal(Math.ceil(target.baseMaxhp * 0.5));
 			}
-			if (success && !target.isAlly(source)) {
-				target.staleness = 'external';
-			}
 			if (!success) {
 				this.add('-fail', target, 'heal');
 				return null;
@@ -346,9 +343,6 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 				success = !!this.heal(this.modify(target.baseMaxhp, 0.75));
 			} else {
 				success = !!this.heal(Math.ceil(target.baseMaxhp * 0.5));
-			}
-			if (success && !target.isAlly(source)) {
-				target.staleness = 'external';
 			}
 			if (!success) {
 				this.add('-fail', target, 'heal');

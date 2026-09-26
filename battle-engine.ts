@@ -13,8 +13,6 @@ export interface CreateBattleOptions {
 	format: string;
 	p1: BattlePlayer;
 	p2: BattlePlayer;
-	/** Submit the supplied team order during Team Preview (default: true). */
-	autoTeamPreview?: boolean;
 }
 
 export interface BattleEvent {
@@ -50,10 +48,6 @@ export class BattleEngine {
 			send: (type, data) => this.receive(type, data),
 		});
 		this.battle.sendUpdates();
-		if (options.autoTeamPreview !== false && this.battle.requestState === 'teampreview') {
-			this.choose('p1', 'team');
-			this.choose('p2', 'team');
-		}
 	}
 
 	private receive(type: string, data: string | string[]) {

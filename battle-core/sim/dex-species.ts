@@ -33,11 +33,8 @@ export type ModdedSpeciesData = (SpeciesData | CosmeticFormeData |
 	Partial<Omit<CosmeticFormeData, 'isCosmeticForme'>> & { inherit: true }) & ModdedEffectText;
 
 export interface SpeciesFormatsData {
-	doublesTier?: TierTypes.Doubles | TierTypes.Other;
 	gmaxUnreleased?: boolean;
 	isNonstandard?: Nonstandard | null;
-	natDexTier?: TierTypes.Singles | TierTypes.Other;
-	tier?: TierTypes.Singles | TierTypes.Other;
 }
 
 export type ModdedSpeciesFormatsData = SpeciesFormatsData & { inherit?: true };
@@ -268,19 +265,6 @@ export class Species extends BasicEffect implements Readonly<BasicEffect & Speci
 	 */
 	readonly pokemonGoData?: string[];
 
-	/**
-	 * Singles Tier. The Pokemon's location in the Smogon tier system.
-	 */
-	readonly tier: TierTypes.Singles | TierTypes.Other;
-	/**
-	 * Doubles Tier. The Pokemon's location in the Smogon doubles tier system.
-	 */
-	readonly doublesTier: TierTypes.Doubles | TierTypes.Other;
-	/**
-	 * National Dex Tier. The Pokemon's location in the Smogon National Dex tier system.
-	 */
-	readonly natDexTier: TierTypes.Singles | TierTypes.Other;
-
 	constructor(data: AnyObject) {
 		super(data);
 
@@ -298,9 +282,6 @@ export class Species extends BasicEffect implements Readonly<BasicEffect & Speci
 		this.types = data.types || ['???'];
 		this.addedType = data.addedType || undefined;
 		this.prevo = data.prevo || '';
-		this.tier = data.tier || '';
-		this.doublesTier = data.doublesTier || '';
-		this.natDexTier = data.natDexTier || '';
 		this.evos = data.evos || [];
 		this.evoType = data.evoType || undefined;
 		this.evoMove = data.evoMove || undefined;
@@ -365,8 +346,7 @@ export class Species extends BasicEffect implements Readonly<BasicEffect & Speci
 
 const EMPTY_SPECIES = Utils.deepFreeze(new Species({
 	id: '', name: '', exists: false,
-	tier: 'Illegal', doublesTier: 'Illegal',
-	natDexTier: 'Illegal', isNonstandard: 'Custom',
+	isNonstandard: 'Custom',
 }));
 
 export class Learnset {
@@ -534,36 +514,7 @@ export class DexSpecies {
 					}
 				}
 			}
-			if (!species.tier && !species.doublesTier && !species.natDexTier && species.baseSpecies !== species.name) {
-				if (species.baseSpecies === 'Mimikyu') {
-					species.tier = this.dex.data.FormatsData[toID(species.baseSpecies)].tier || 'Illegal';
-					species.doublesTier = this.dex.data.FormatsData[toID(species.baseSpecies)].doublesTier || species.tier as any;
-					species.natDexTier = this.dex.data.FormatsData[toID(species.baseSpecies)].natDexTier || species.tier;
-				} else if (species.id.endsWith('totem')) {
-					species.tier = this.dex.data.FormatsData[species.id.slice(0, -5)].tier || 'Illegal';
-					species.doublesTier = this.dex.data.FormatsData[species.id.slice(0, -5)].doublesTier || species.tier as any;
-					species.natDexTier = this.dex.data.FormatsData[species.id.slice(0, -5)].natDexTier || species.tier;
-				} else if (species.battleOnly) {
-					species.tier = this.dex.data.FormatsData[toID(species.battleOnly)]?.tier || 'Illegal';
-					species.doublesTier = this.dex.data.FormatsData[toID(species.battleOnly)]?.doublesTier || species.tier as any;
-					species.natDexTier = this.dex.data.FormatsData[toID(species.battleOnly)]?.natDexTier || species.tier;
-				} else {
-					const baseFormatsData = this.dex.data.FormatsData[toID(species.baseSpecies)];
-					if (!baseFormatsData) {
-						throw new Error(`${species.baseSpecies} has no formats-data entry`);
-					}
-					species.tier = baseFormatsData.tier || 'Illegal';
-					species.doublesTier = baseFormatsData.doublesTier || species.tier as any;
-					species.natDexTier = baseFormatsData.natDexTier || species.tier;
-				}
-			}
-			if (!species.tier) species.tier = 'Illegal';
-			if (!species.doublesTier) species.doublesTier = species.tier as any;
-			if (!species.natDexTier) species.natDexTier = species.tier;
 			if (species.gen > this.dex.gen) {
-				species.tier = 'Illegal';
-				species.doublesTier = 'Illegal';
-				species.natDexTier = 'Illegal';
 				species.isNonstandard = 'Future';
 			}
 			species.nfe = species.evos.some(evo => {
@@ -587,9 +538,8 @@ export class DexSpecies {
 				const parentMod = this.dex.mod(this.dex.parentMod);
 				if (this.dex.data.Pokedex[id] === parentMod.data.Pokedex[id]) {
 					const parentSpecies = parentMod.species.getByID(id);
-					// checking tier cheaply filters out some non-matches.
 					// The construction logic is very complex so we ultimately need to do a deep equality check
-					if (species.tier === parentSpecies.tier && isDeepStrictEqual(species, parentSpecies)) {
+					if (isDeepStrictEqual(species, parentSpecies)) {
 						species = parentSpecies;
 					}
 				}
@@ -597,7 +547,7 @@ export class DexSpecies {
 		} else {
 			species = new Species({
 				id, name: id,
-				exists: false, tier: 'Illegal', doublesTier: 'Illegal', natDexTier: 'Illegal', isNonstandard: 'Custom',
+				exists: false, isNonstandard: 'Custom',
 			});
 		}
 		if (species.exists) this.speciesCache.set(id, this.dex.deepFreeze(species));
@@ -702,8 +652,7 @@ export class DexSpecies {
 			if (species.isNonstandard) {
 				// It's normal for a nonstandard species not to have learnset data
 
-				// Formats should replace the `Obtainable Moves` rule if they want to
-				// allow pokemon without learnsets.
+				// No learnset data is available for this species.
 				return out;
 			}
 			if (species.prevo && this.getLearnsetData(toID(species.prevo)).learnset) {

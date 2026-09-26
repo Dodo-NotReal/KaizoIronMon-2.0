@@ -361,9 +361,6 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		inherit: true,
 		onHit(target, source) {
 			const success = !!this.heal(Math.ceil(target.baseMaxhp * 0.5));
-			if (success && !target.isAlly(source)) {
-				target.staleness = 'external';
-			}
 			return success;
 		},
 	},

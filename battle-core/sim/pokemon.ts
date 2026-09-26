@@ -38,12 +38,6 @@ export interface EffectState {
 	[k: string]: any;
 }
 
-// Berries which restore PP/HP and thus inflict external staleness when given to an opponent as
-// there are very few non-malicious competitive reasons to do so
-export const RESTORATIVE_BERRIES = new Set([
-	'leppaberry', 'aguavberry', 'enigmaberry', 'figyberry', 'iapapaberry', 'magoberry', 'sitrusberry', 'wikiberry', 'oranberry',
-] as ID[]);
-
 export class Pokemon {
 	readonly side: Side;
 	readonly battle: Battle;
@@ -283,13 +277,6 @@ export class Pokemon {
 	teraType: string;
 	baseTypes: string[];
 	terastallized?: string;
-
-	/** A Pokemon's currently 'staleness' with respect to the Endless Battle Clause. */
-	staleness?: 'internal' | 'external';
-	/** Staleness that will be set once a future action occurs (eg. eating a berry). */
-	pendingStaleness?: 'internal' | 'external';
-	/** Temporary staleness that lasts only until the Pokemon switches. */
-	volatileStaleness?: 'external';
 
 	// Gen 1 only
 	modifiedStats?: StatsExceptHPTable;
@@ -1543,8 +1530,6 @@ export class Pokemon {
 		this.newlySwitched = true;
 		this.beingCalledBack = false;
 
-		this.volatileStaleness = undefined;
-
 		delete this.abilityState.started;
 		delete this.itemState.started;
 
@@ -1777,18 +1762,6 @@ export class Pokemon {
 			this.battle.singleEvent('Eat', item, this.itemState, this, source, sourceEffect);
 			this.battle.runEvent('EatItem', this, source, sourceEffect, item);
 
-			if (RESTORATIVE_BERRIES.has(item.id)) {
-				switch (this.pendingStaleness) {
-				case 'internal':
-					if (this.staleness !== 'external') this.staleness = 'internal';
-					break;
-				case 'external':
-					this.staleness = 'external';
-					break;
-				}
-				this.pendingStaleness = undefined;
-			}
-
 			this.lastItem = this.item;
 			this.item = '';
 			this.battle.clearEffectState(this.itemState);
@@ -1849,7 +1822,6 @@ export class Pokemon {
 			this.item = '';
 			const oldItemState = this.itemState;
 			this.battle.clearEffectState(this.itemState);
-			this.pendingStaleness = undefined;
 			this.battle.singleEvent('End', item, oldItemState, this);
 			this.battle.runEvent('AfterTakeItem', this, null, null, item);
 			return item;
@@ -1861,14 +1833,6 @@ export class Pokemon {
 		if (!this.hp || !this.isActive) return false;
 		if (typeof item === 'string') item = this.battle.dex.items.get(item);
 
-		const effectid = this.battle.effect ? this.battle.effect.id : '';
-		if (RESTORATIVE_BERRIES.has('leppaberry' as ID)) {
-			const inflicted = ['trick', 'switcheroo'].includes(effectid);
-			const external = inflicted && source && !source.isAlly(this);
-			this.pendingStaleness = external ? 'external' : 'internal';
-		} else {
-			this.pendingStaleness = undefined;
-		}
 		const oldItem = this.getItem();
 		const oldItemState = this.itemState;
 		this.item = item.id;

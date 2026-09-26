@@ -3,7 +3,7 @@ import { sampleTeams } from './teams';
 
 const teams = sampleTeams();
 const engine = createBattle({
-	format: 'gen4ou',
+	format: 'gen4linkbattle',
 	p1: { name: 'Alice', team: teams.p1 },
 	p2: { name: 'Bob', team: teams.p2 },
 });

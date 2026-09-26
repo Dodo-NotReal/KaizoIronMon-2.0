@@ -1923,7 +1923,6 @@ export const Moves: import('../sim/dex-moves').MoveDataTable = {
 				this.add('-enditem', target, item.name, '[from] stealeat', '[move] Bug Bite', `[of] ${source}`);
 				if (this.singleEvent('Eat', item, target.itemState, source, source, move)) {
 					this.runEvent('EatItem', source, source, move, item);
-					if (item.id === 'leppaberry') target.staleness = 'external';
 				}
 				if (item.onEat) source.ateBerry = true;
 			}
@@ -4878,7 +4877,6 @@ export const Moves: import('../sim/dex-moves').MoveDataTable = {
 		onHit(target, source) {
 			const oldAbility = target.setAbility(source.ability, source);
 			if (!oldAbility) return oldAbility as false | null;
-			if (!target.isAlly(source)) target.volatileStaleness = 'external';
 		},
 		target: "normal",
 		type: "Normal",
@@ -5753,7 +5751,6 @@ export const Moves: import('../sim/dex-moves').MoveDataTable = {
 				move.onHit = function (foe) {
 					if (this.singleEvent('Eat', item, source.itemState, foe, source, move)) {
 						this.runEvent('EatItem', foe, source, move, item);
-						if (item.id === 'leppaberry') foe.staleness = 'external';
 					}
 					if (item.onEat) foe.ateBerry = true;
 				};
@@ -5830,9 +5827,6 @@ export const Moves: import('../sim/dex-moves').MoveDataTable = {
 				success = !!this.heal(this.modify(target.baseMaxhp, 0.667));
 			} else {
 				success = !!this.heal(Math.ceil(target.baseMaxhp * 0.5));
-			}
-			if (success && !target.isAlly(source)) {
-				target.staleness = 'external';
 			}
 			if (!success) {
 				this.add('-fail', target, 'heal');
@@ -8411,9 +8405,6 @@ export const Moves: import('../sim/dex-moves').MoveDataTable = {
 				success = !!this.heal(this.modify(target.baseMaxhp, 0.75));
 			} else {
 				success = !!this.heal(Math.ceil(target.baseMaxhp * 0.5));
-			}
-			if (success && !target.isAlly(source)) {
-				target.staleness = 'external';
 			}
 			if (!success) {
 				this.add('-fail', target, 'heal');
@@ -13450,7 +13441,6 @@ export const Moves: import('../sim/dex-moves').MoveDataTable = {
 				this.add('-enditem', target, item.name, '[from] stealeat', '[move] Pluck', `[of] ${source}`);
 				if (this.singleEvent('Eat', item, target.itemState, source, source, move)) {
 					this.runEvent('EatItem', source, source, move, item);
-					if (item.id === 'leppaberry') target.staleness = 'external';
 				}
 				if (item.onEat) source.ateBerry = true;
 			}

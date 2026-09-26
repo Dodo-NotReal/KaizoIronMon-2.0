@@ -2,7 +2,7 @@ import { Dex, createBattle } from '../index';
 import { sampleTeams } from './teams';
 
 for (let gen = 1; gen <= 9; gen++) {
-	const format = `gen${gen}ou`;
+	const format = `gen${gen}linkbattle`;
 	const teams = sampleTeams();
 	const engine = createBattle({
 		format,

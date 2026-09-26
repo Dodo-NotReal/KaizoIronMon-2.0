@@ -38,13 +38,6 @@ type Nonstandard = 'Past' | 'Future' | 'Unobtainable' | 'CAP' | 'LGPE' | 'Custom
 
 type PokemonSet = import('./teams').PokemonSet;
 
-declare namespace TierTypes {
-	export type Singles = "AG" | "Uber" | "(AG)" | "OU" | "(OU)" | "UUBL" | "UU" | "RUBL" | "RU" | "NUBL" | "NU" |
-		"PUBL" | "PU" | "ZUBL" | "ZU" | "NFE" | "LC";
-	export type Doubles = "DUber" | "(DUber)" | "DOU" | "(DOU)" | "DBL" | "DUU" | "(DUU)" | "NFE" | "LC";
-	export type Other = "Unreleased" | "Illegal" | "CAP" | "CAP NFE" | "CAP LC";
-}
-
 interface EventInfo {
 	generation: number;
 	level?: number;
@@ -379,9 +372,6 @@ interface ModdedBattleScriptsData extends Partial<BattleScriptsData> {
 	debug?: (this: Battle, activity: string) => void;
 	getActionSpeed?: (this: Battle, action: AnyObject) => void;
 	init?: (this: ModdedDex) => void;
-	maybeTriggerEndlessBattleClause?: (
-		this: Battle, trappedBySide: boolean[], stalenessBySide: ('internal' | 'external' | undefined)[]
-	) => boolean | undefined;
 	endTurn?: (this: Battle) => void;
 	runAction?: (this: Battle, action: Action) => void;
 	statModify?: (this: Battle, baseStats: StatsTable, set: PokemonSet, statName: StatID) => number;

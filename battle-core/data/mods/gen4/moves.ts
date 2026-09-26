@@ -489,7 +489,6 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 				move.onHit = function (foe) {
 					if (this.singleEvent('Eat', item, source.itemState, foe, source, move)) {
 						this.runEvent('EatItem', foe, source, move, item);
-						if (item.id === 'leppaberry') foe.staleness = 'external';
 					}
 					if (item.onEat) foe.ateBerry = true;
 				};

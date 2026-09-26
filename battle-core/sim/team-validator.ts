@@ -498,7 +498,7 @@ export class TeamValidator {
 		return { species, eventData: learnset.eventData };
 	}
 
-	getValidationSpecies(set: PokemonSet): { outOfBattleSpecies: Species, tierSpecies: Species } {
+	getValidationSpecies(set: PokemonSet): { outOfBattleSpecies: Species, battleSpecies: Species } {
 		const dex = this.dex;
 		const ruleTable = this.ruleTable;
 		const species = dex.species.get(set.species);
@@ -506,41 +506,41 @@ export class TeamValidator {
 		const ability = dex.abilities.get(set.ability);
 
 		let outOfBattleSpecies = species;
-		let tierSpecies = species;
+		let battleSpecies = species;
 		if (ability.id === 'battlebond' && toID(species.baseSpecies) === 'greninja') {
 			outOfBattleSpecies = dex.species.get('greninjabond');
 			if (ruleTable.has('obtainableformes')) {
-				tierSpecies = outOfBattleSpecies;
+				battleSpecies = outOfBattleSpecies;
 			}
 		}
 		if (ability.id === 'owntempo' && toID(species.baseSpecies) === 'rockruff') {
 			outOfBattleSpecies = dex.species.get('rockruffdusk');
 			if (ruleTable.has('obtainableformes')) {
-				tierSpecies = outOfBattleSpecies;
+				battleSpecies = outOfBattleSpecies;
 			}
 		}
 
 		if (ruleTable.has('obtainableformes')) {
 			const canMegaEvo = dex.gen <= 7 || ruleTable.has('+tag:past');
 			if (item.megaStone?.[species.name]) {
-				tierSpecies = dex.species.get(item.megaStone[species.name]);
+				battleSpecies = dex.species.get(item.megaStone[species.name]);
 			} else if (item.id === 'redorb' && species.id === 'groudon') {
-				tierSpecies = dex.species.get('Groudon-Primal');
+				battleSpecies = dex.species.get('Groudon-Primal');
 			} else if (item.id === 'blueorb' && species.id === 'kyogre') {
-				tierSpecies = dex.species.get('Kyogre-Primal');
+				battleSpecies = dex.species.get('Kyogre-Primal');
 			} else if (
 				canMegaEvo && species.id === 'rayquaza' && set.moves.map(toID).includes('dragonascent' as ID) &&
 				!ruleTable.has('megarayquazaclause')
 			) {
-				tierSpecies = dex.species.get('Rayquaza-Mega');
+				battleSpecies = dex.species.get('Rayquaza-Mega');
 			} else if (item.id === 'rustedsword' && species.id === 'zacian') {
-				tierSpecies = dex.species.get('Zacian-Crowned');
+				battleSpecies = dex.species.get('Zacian-Crowned');
 			} else if (item.id === 'rustedshield' && species.id === 'zamazenta') {
-				tierSpecies = dex.species.get('Zamazenta-Crowned');
+				battleSpecies = dex.species.get('Zamazenta-Crowned');
 			}
 		}
 
-		return { outOfBattleSpecies, tierSpecies };
+		return { outOfBattleSpecies, battleSpecies };
 	}
 
 	validateSet(set: PokemonSet, teamHas: AnyObject): string[] | null {
@@ -640,7 +640,7 @@ export class TeamValidator {
 			set.gender = species.gender || set.gender;
 		}
 
-		const { outOfBattleSpecies, tierSpecies } = this.getValidationSpecies(set);
+		const { outOfBattleSpecies, battleSpecies } = this.getValidationSpecies(set);
 		if (ability.id === 'battlebond' && toID(species.baseSpecies) === 'greninja') {
 			if (ruleTable.has('obtainablemisc')) {
 				if (set.gender && set.gender !== 'M') {
@@ -705,7 +705,7 @@ export class TeamValidator {
 			delete set.teraType;
 		}
 
-		let problem = this.checkSpecies(set, species, tierSpecies, setHas);
+		let problem = this.checkSpecies(set, species, battleSpecies, setHas);
 		if (problem) problems.push(problem);
 
 		problem = this.checkItem(set, item, setHas);
@@ -735,7 +735,7 @@ export class TeamValidator {
 				if (!ability.name || ability.name === 'No Ability') {
 					problems.push(`${name} needs to have an ability.`);
 				} else if (!Object.values(species.abilities).includes(ability.name)) {
-					if (tierSpecies.abilities[0] === ability.name) {
+					if (battleSpecies.abilities[0] === ability.name) {
 						set.ability = species.abilities[0];
 					} else {
 						problems.push(`${name} can't have ${set.ability}.`);
@@ -1707,58 +1707,46 @@ export class TeamValidator {
 		return problems;
 	}
 
-	checkSpecies(set: PokemonSet, species: Species, tierSpecies: Species, setHas: { [k: string]: true }) {
+	checkSpecies(set: PokemonSet, species: Species, battleSpecies: Species, setHas: { [k: string]: true }) {
 		const dex = this.dex;
 		const ruleTable = this.ruleTable;
 
 		// https://www.smogon.com/forums/posts/8659168
 		if (
-			(tierSpecies.id === 'zamazentacrowned' && species.id === 'zamazenta') ||
-			(tierSpecies.id === 'zaciancrowned' && species.id === 'zacian')
+			(battleSpecies.id === 'zamazentacrowned' && species.id === 'zamazenta') ||
+			(battleSpecies.id === 'zaciancrowned' && species.id === 'zacian')
 		) {
-			species = tierSpecies;
+			species = battleSpecies;
 		}
 
 		setHas['pokemon:' + species.id] = true;
 		setHas['basepokemon:' + toID(species.baseSpecies)] = true;
 
 		let isMega = false;
-		if (tierSpecies !== species) {
-			setHas['pokemon:' + tierSpecies.id] = true;
-			if (tierSpecies.isMega || tierSpecies.isPrimal) {
+		if (battleSpecies !== species) {
+			setHas['pokemon:' + battleSpecies.id] = true;
+			if (battleSpecies.isMega || battleSpecies.isPrimal) {
 				setHas['tag:mega'] = true;
 				isMega = true;
 			}
 		}
 
 		let isGmax = false;
-		if (tierSpecies.canGigantamax && set.gigantamax) {
-			setHas['pokemon:' + tierSpecies.id + 'gmax'] = true;
+		if (battleSpecies.canGigantamax && set.gigantamax) {
+			setHas['pokemon:' + battleSpecies.id + 'gmax'] = true;
 			setHas['tag:gigantamax'] = true;
 			isGmax = true;
 		}
-		if (tierSpecies.baseSpecies === 'Greninja' && toID(set.ability) === 'battlebond') {
+		if (battleSpecies.baseSpecies === 'Greninja' && toID(set.ability) === 'battlebond') {
 			setHas['pokemon:greninjabond'] = true;
 		}
-		if (tierSpecies.baseSpecies === 'Rockruff' && toID(set.ability) === 'owntempo') {
+		if (battleSpecies.baseSpecies === 'Rockruff' && toID(set.ability) === 'owntempo') {
 			setHas['pokemon:rockruffdusk'] = true;
 		}
 
-		const tier = tierSpecies.tier;
-		const tierTag = 'tag:' + toID(tier);
-		setHas[tierTag] = true;
-
-		const doublesTier = tierSpecies.doublesTier === '(DUU)' ? 'DNU' : tierSpecies.doublesTier;
-		const doublesTierTag = 'tag:' + toID(doublesTier);
-		setHas[doublesTierTag] = true;
-
-		const ndTier = tierSpecies.natDexTier;
-		const ndTierTag = 'tag:nd' + toID(ndTier);
-		setHas[ndTierTag] = true;
-
 		// Only pokemon that can gigantamax should have the Gmax flag
-		if (!tierSpecies.canGigantamax && set.gigantamax) {
-			return `${tierSpecies.name} cannot Gigantamax but is flagged as being able to.`;
+		if (!battleSpecies.canGigantamax && set.gigantamax) {
+			return `${battleSpecies.name} cannot Gigantamax but is flagged as being able to.`;
 		}
 
 		let banReason = ruleTable.check('pokemon:' + species.id);
@@ -1767,10 +1755,10 @@ export class TeamValidator {
 		}
 		if (banReason === '') return null;
 
-		if (tierSpecies !== species) {
-			banReason = ruleTable.check('pokemon:' + tierSpecies.id);
+		if (battleSpecies !== species) {
+			banReason = ruleTable.check('pokemon:' + battleSpecies.id);
 			if (banReason) {
-				return `${tierSpecies.name} is ${banReason}.`;
+				return `${battleSpecies.name} is ${banReason}.`;
 			}
 			if (banReason === '') return null;
 		}
@@ -1783,7 +1771,7 @@ export class TeamValidator {
 		}
 
 		if (isGmax) {
-			banReason = ruleTable.check('pokemon:' + tierSpecies.id + 'gmax') ||
+			banReason = ruleTable.check('pokemon:' + battleSpecies.id + 'gmax') ||
 				ruleTable.check('tag:gigantamax', setHas);
 			if (banReason) {
 				return `Gigantamaxing ${species.name} is ${banReason}.`;
@@ -1803,14 +1791,14 @@ export class TeamValidator {
 			}
 		}
 
-		const tagProblem = this.checkTagRules(set, tierSpecies, setHas);
+		const tagProblem = this.checkTagRules(set, battleSpecies, setHas);
 		if (tagProblem !== undefined) return tagProblem;
 
 		// Special casing for Pokemon that can Gmax, but their Gmax factor cannot be legally obtained
-		if (tierSpecies.gmaxUnreleased && set.gigantamax) {
+		if (battleSpecies.gmaxUnreleased && set.gigantamax) {
 			banReason = ruleTable.check('tag:unobtainable');
 			if (banReason) {
-				return `${tierSpecies.name} is flagged as gigantamax, but it cannot gigantamax without hacking or glitches.`;
+				return `${battleSpecies.name} is flagged as gigantamax, but it cannot gigantamax without hacking or glitches.`;
 			}
 			if (banReason === '') return null;
 		}
@@ -2519,8 +2507,7 @@ export class TeamValidator {
 		if (!fullLearnset.length) {
 			// It's normal for a nonstandard species not to have learnset data
 
-			// Formats should replace the `Obtainable Moves` rule if they want to
-			// allow pokemon without learnsets.
+			// A species without learnset data cannot pass move validation.
 			return ` can't learn any moves at all.`;
 		}
 
