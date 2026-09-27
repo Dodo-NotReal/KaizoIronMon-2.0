@@ -87,6 +87,14 @@ if (problems) console.error(problems);
 
 `TeamValidator`, `Teams` and `Dex` are also exported directly. The nine formats have no competitive rules. Game-specific limits and species availability belong in an external validator; that layer has not been added yet.
 
+## Local battle test page
+
+After `npm install`, run `npm run test:web` and open `http://127.0.0.1:3000` in a browser. The server listens only on the local computer. Stop it with Ctrl+C.
+
+Select a Gen 1–9 mod, configure one player Pokémon and add 1–6 opponent Pokémon, then select **Avvia test battaglia**. Choose the player's moves to advance turns; the opponent uses its first available move and switches to the next available Pokémon when needed. **Mostra JSON squadre** displays the current team data for copying into other tests.
+
+The selected mod supplies species, forms, base stats, abilities, moves and items. The page lets you edit level, moves, EVs, IVs, friendship and the fields applicable to the generation (including Dynamax in Gen 8 and Tera type in Gen 9). Base stats are displayed from the mod and are not changed by an individual Pokémon set. This is a local test harness, not a competitive legality checker.
+
 ## Raw BattleStream protocol
 
 `BattleStream` and `getPlayerStreams` remain available for integrations that use Showdown's native stream protocol. The stream accepts commands such as:

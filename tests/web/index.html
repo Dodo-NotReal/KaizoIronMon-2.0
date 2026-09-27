@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>KaizoIronMon · Laboratorio battaglie</title>
+  <link rel="stylesheet" href="/style.css">
+  <script src="/app.js" defer></script>
+</head>
+<body>
+  <header class="masthead">
+    <div class="shell masthead-inner">
+      <div>
+        <p class="eyebrow">KaizoIronMon 2.0 · pagina di test locale</p>
+        <h1>Laboratorio battaglie</h1>
+        <p class="lead">Prepara un Pokémon, costruisci una squadra avversaria da 1 a 6 e prova il motore della generazione scelta.</p>
+      </div>
+      <div class="masthead-mark" aria-hidden="true"><span>1</span><i>VS</i><span>6</span></div>
+    </div>
+  </header>
+
+  <main class="shell">
+    <section class="panel mod-panel" aria-labelledby="mod-heading">
+      <div class="section-heading">
+        <div>
+          <p class="step">01 / MOD</p>
+          <h2 id="mod-heading">Scegli la generazione</h2>
+        </div>
+        <span id="mod-badge" class="badge">Gen 9</span>
+      </div>
+      <div id="mod-switch" class="mod-switch" role="group" aria-label="Mod di battaglia"></div>
+      <p id="mod-note" class="muted">Caricamento dati…</p>
+    </section>
+
+    <div id="notice" class="notice" role="status" aria-live="polite" hidden></div>
+
+    <section class="panel" aria-labelledby="player-heading">
+      <div class="section-heading">
+        <div>
+          <p class="step">02 / GIOCATORE</p>
+          <h2 id="player-heading">Il tuo Pokémon</h2>
+        </div>
+        <span class="count">1 Pokémon</span>
+      </div>
+      <div id="player-card" class="card-host"></div>
+    </section>
+
+    <section class="panel" aria-labelledby="opponent-heading">
+      <div class="section-heading">
+        <div>
+          <p class="step">03 / AVVERSARIO</p>
+          <h2 id="opponent-heading">Squadra avversaria</h2>
+        </div>
+        <span id="opponent-count" class="count">1 / 6 Pokémon</span>
+      </div>
+      <div id="opponent-cards" class="opponents"></div>
+      <button id="add-opponent" class="button button-secondary" type="button">+ Aggiungi Pokémon</button>
+    </section>
+
+    <section class="panel launch-panel" aria-labelledby="launch-heading">
+      <div>
+        <p class="step">04 / PROVA</p>
+        <h2 id="launch-heading">Avvia la battaglia</h2>
+        <p class="muted">Le regole competitive non vengono applicate. L’avversario usa la prima mossa disponibile e sceglie il prossimo Pokémon quando serve.</p>
+      </div>
+      <div class="launch-actions">
+        <button id="show-json" class="button button-secondary" type="button">Mostra JSON squadre</button>
+        <button id="start-battle" class="button button-primary" type="button">Avvia test battaglia</button>
+      </div>
+      <pre id="team-json" class="team-json" hidden></pre>
+    </section>
+
+    <section id="battle-panel" class="panel battle-panel" aria-labelledby="battle-heading" hidden>
+      <div class="section-heading">
+        <div>
+          <p class="step">05 / BATTAGLIA</p>
+          <h2 id="battle-heading">Battaglia in corso</h2>
+        </div>
+        <span id="turn-badge" class="badge">Turno 1</span>
+      </div>
+      <div id="battle-status" class="battle-status"></div>
+      <div id="battle-actions" class="battle-actions"></div>
+      <h3>Registro eventi</h3>
+      <ol id="battle-log" class="battle-log" aria-live="polite"></ol>
+    </section>
+  </main>
+
+  <datalist id="species-list"></datalist>
+  <datalist id="item-list"></datalist>
+</body>
+</html>

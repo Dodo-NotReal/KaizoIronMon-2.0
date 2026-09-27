@@ -1,0 +1,76 @@
+:root { font-family: Inter, "Segoe UI", Arial, sans-serif; color: #182b39; background: #f3f6f7; }
+* { box-sizing: border-box; }
+body { margin: 0; }
+button, input, select { font: inherit; }
+button { cursor: pointer; }
+.shell { width: min(1180px, calc(100% - 36px)); margin: 0 auto; }
+.masthead { color: #fff; background: linear-gradient(120deg, #092e39 0%, #15546a 72%, #196776 100%); padding: 43px 0 50px; }
+.masthead-inner { display: flex; align-items: center; justify-content: space-between; gap: 20px; }
+.eyebrow, .step { color: #16979b; font-size: 11px; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; margin: 0 0 8px; }
+.eyebrow { color: #8ce0d8; }
+h1 { margin: 0 0 10px; font-size: clamp(29px, 4vw, 45px); letter-spacing: -.04em; }
+h2 { margin: 0; font-size: 22px; letter-spacing: -.03em; }
+h3 { margin: 24px 0 10px; font-size: 15px; }
+.lead { margin: 0; max-width: 650px; color: #d4e9ea; line-height: 1.55; }
+.masthead-mark { flex: none; display: flex; align-items: center; gap: 8px; color: #fff; }
+.masthead-mark span { display: grid; place-items: center; width: 57px; height: 57px; border: 2px solid #8ce0d8; border-radius: 15px; font-size: 27px; font-weight: 800; }
+.masthead-mark i { color: #8ce0d8; font-size: 12px; font-style: normal; font-weight: 800; }
+main { padding: 25px 0 60px; }
+.panel { background: #fff; border: 1px solid #dce5e7; border-radius: 17px; box-shadow: 0 7px 24px rgba(14, 56, 65, .04); padding: 24px; margin-bottom: 18px; }
+.section-heading { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 20px; }
+.badge, .count { flex: none; border-radius: 999px; padding: 7px 11px; background: #e8f5f4; color: #0b696c; font-size: 12px; font-weight: 800; }
+.count { background: #edf2f4; color: #506672; }
+.mod-switch { display: grid; grid-template-columns: repeat(9, minmax(0, 1fr)); gap: 7px; }
+.mod-button { padding: 11px 5px; border: 1px solid #cfdbde; border-radius: 10px; background: #f8fbfb; color: #3f5d68; font-size: 13px; font-weight: 800; }
+.mod-button:hover, .mod-button:focus-visible { border-color: #168c91; }
+.mod-button[aria-pressed="true"] { color: #fff; background: #106b74; border-color: #106b74; }
+.muted { color: #607681; font-size: 13px; line-height: 1.55; }
+.mod-panel .muted { margin: 14px 0 0; }
+.notice { border-radius: 10px; margin-bottom: 18px; padding: 13px 17px; background: #e8f5f4; color: #0c6569; border: 1px solid #b8ddda; }
+.notice.error { background: #fff0ed; color: #a4352b; border-color: #f2c5be; }
+.mon-card { border: 1px solid #dbe5e7; border-radius: 13px; background: #fcfdfd; padding: 19px; }
+.mon-card + .mon-card { margin-top: 12px; }
+.card-heading { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-bottom: 15px; }
+.card-heading h3 { margin: 0; font-size: 16px; }
+.remove-button { border: 0; background: transparent; color: #ac4639; font-size: 12px; font-weight: 700; }
+.form-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
+.field { display: flex; flex-direction: column; gap: 5px; min-width: 0; color: #48616e; font-size: 12px; font-weight: 700; }
+.field input, .field select { width: 100%; min-width: 0; border: 1px solid #cddbdd; border-radius: 8px; color: #172e39; background: #fff; padding: 9px 10px; outline: none; }
+.field input:focus, .field select:focus { border-color: #188d91; box-shadow: 0 0 0 3px #ccebe9; }
+.field input:disabled, .field select:disabled { background: #eef2f3; color: #84949b; }
+.field-wide { grid-column: span 2; }
+.subheading { color: #455e68; margin: 17px 0 8px; font-size: 12px; text-transform: uppercase; letter-spacing: .08em; }
+.stat-chips { display: flex; gap: 6px; flex-wrap: wrap; }
+.stat-chips span { padding: 6px 9px; background: #eaf2f3; border-radius: 7px; color: #3a5b66; font-size: 12px; }
+.stat-chips b { color: #123b46; }
+.stat-grid { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 8px; }
+.stat-grid .field input { padding: 8px 5px; text-align: center; }
+.move-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 9px; }
+.move-hint { color: #748992; font-size: 11px; margin: 8px 0 0; }
+.extra-grid { margin-top: 16px; }
+.check-field { display: flex; align-items: center; gap: 8px; padding-top: 18px; color: #48616e; font-size: 13px; }
+.check-field input { accent-color: #137c82; }
+.opponents { margin-bottom: 14px; }
+.button { border: 1px solid transparent; border-radius: 9px; padding: 11px 15px; font-weight: 800; font-size: 13px; }
+.button-primary { color: #fff; background: #0e737b; }
+.button-primary:hover { background: #09575f; }
+.button-secondary { color: #156e74; background: #edf7f6; border-color: #b9dedc; }
+.button-secondary:hover { background: #ddf0ee; }
+.button:disabled { opacity: .45; cursor: not-allowed; }
+.launch-panel { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 14px; }
+.launch-panel > div:first-child { max-width: 670px; }
+.launch-panel .muted { margin: 9px 0 0; }
+.launch-actions { display: flex; align-items: end; gap: 8px; flex-wrap: wrap; }
+.team-json { width: 100%; max-height: 300px; overflow: auto; padding: 15px; border-radius: 10px; background: #142a34; color: #e8f8f5; font-size: 12px; }
+.battle-status { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.battle-side { border-radius: 10px; background: #f1f6f6; padding: 14px; }
+.battle-side strong { display: block; margin-bottom: 6px; }
+.battle-side small { display: block; margin-top: 5px; color: #667b84; }
+.hp-track { height: 8px; background: #d8e3e5; border-radius: 9px; overflow: hidden; margin-top: 9px; }
+.hp-track i { display: block; height: 100%; background: #2aa884; }
+.battle-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-top: 18px; }
+.battle-actions .field { min-width: 160px; }
+.battle-log { max-height: 340px; overflow: auto; border: 1px solid #dce7e8; border-radius: 9px; background: #f8fbfb; margin: 0; padding: 12px 12px 12px 36px; font: 12px/1.6 Consolas, monospace; color: #334c58; }
+.battle-log li { padding: 2px 0; }
+@media (max-width: 850px) { .form-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } .move-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } .stat-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+@media (max-width: 600px) { .masthead { padding: 30px 0; } .masthead-mark { display: none; } .panel { padding: 17px; } .mod-switch { grid-template-columns: repeat(3, 1fr); } .form-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } .field-wide { grid-column: span 2; } .battle-status { grid-template-columns: 1fr; } }
