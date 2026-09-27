@@ -16,7 +16,7 @@ npm test
 npm run example
 ```
 
-`npm test` rebuilds the library, audits the source and build, and runs the automated tests. `npm run example` prints a short Gen 4 battle. The public entry point is `dist/index.js`, with TypeScript definitions at `dist/index.d.ts`. Copy or clone the repository, install dependencies, and build it; no Pokémon Showdown server or client installation is needed.
+`npm test` builds the library and test files, audits the source and build, and runs the automated tests. `npm run build` compiles the library without test files. `npm run example` prints a short Gen 4 battle. The public entry point is `dist/index.js`, with TypeScript definitions at `dist/index.d.ts`. Copy or clone the repository, install dependencies, and build it; no Pokémon Showdown server or client installation is needed.
 
 ## Start and play a battle
 
@@ -118,9 +118,9 @@ battle-core/
   lib/             stream and utility helpers only
   config/          manual-team format catalog
 battle-text/        MIT-licensed BattleTextParser with English tables
-examples/           basic battle, generation loop, text parser
-tests/              simulation, text, mechanics and removal checks
-tools/              clean build and audit
+examples/           basic battle and sample teams
+tests/              automated tests, audit, smoke scripts and local web page
+tools/              build cleanup
 licenses/           upstream license copies
 ```
 

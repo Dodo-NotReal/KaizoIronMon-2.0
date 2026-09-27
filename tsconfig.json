@@ -12,6 +12,6 @@
     "forceConsistentCasingInFileNames": true,
     "useDefineForClassFields": false
   },
-  "include": ["index.ts", "battle-engine.ts", "battle-core/**/*.ts", "battle-text/**/*.ts", "examples/**/*.ts", "tests/**/*.ts"],
+  "include": ["index.ts", "battle-engine.ts", "battle-core/**/*.ts", "battle-text/**/*.ts", "examples/**/*.ts"],
   "exclude": ["dist", "node_modules", "_source"]
 }

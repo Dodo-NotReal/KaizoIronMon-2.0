@@ -1,5 +1,5 @@
 import { Dex, createBattle } from '../index';
-import { sampleTeams } from './teams';
+import { sampleTeams } from '../examples/teams';
 
 for (let gen = 1; gen <= 9; gen++) {
 	const format = `gen${gen}linkbattle`;

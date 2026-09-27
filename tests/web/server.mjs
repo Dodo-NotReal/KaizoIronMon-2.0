@@ -4,10 +4,10 @@ import { createRequire } from 'node:module';
 import { randomUUID } from 'node:crypto';
 
 const require = createRequire(import.meta.url);
-const { Dex, createBattle } = require('../dist/index.js');
-const page = new URL('../tests/web/index.html', import.meta.url);
-const script = new URL('../tests/web/app.js', import.meta.url);
-const style = new URL('../tests/web/style.css', import.meta.url);
+const { Dex, createBattle } = require('../../dist/index.js');
+const page = new URL('./index.html', import.meta.url);
+const script = new URL('./app.js', import.meta.url);
+const style = new URL('./style.css', import.meta.url);
 const port = Number(process.env.TEST_WEB_PORT || 3000);
 const catalogs = new Map();
 const battles = new Map();

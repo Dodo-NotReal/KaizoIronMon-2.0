@@ -21,7 +21,7 @@ The Dex loads battle tables dynamically by filename (`Abilities`, `Rulesets`, `F
 - Random Battle aliases and the generator-only `PotD` rule.
 - `sim/tools/` including RandomPlayerAI; server, database, matchmaking, replay viewer, UI, graphics, audio, translations and client Dex.
 
-The general `PRNG` remains because normal battles require randomness. The wrapper and direct `Battle` reject unavailable formats and require explicit player teams. `tools/audit.mjs` checks both source and compiled output for generator files/imports, verifies the eight generation mod directories and nine empty-rule formats, and checks that tier fields are absent from species data.
+The general `PRNG` remains because normal battles require randomness. The wrapper and direct `Battle` reject unavailable formats and require explicit player teams. `tests/audit.mjs` checks both source and compiled output for generator files/imports, verifies the eight generation mod directories and nine empty-rule formats, and checks that tier fields are absent from species data.
 
 ## English battle text
 
@@ -31,4 +31,4 @@ The `BattleEngine` wrapper reads original battle updates synchronously, emits on
 
 ## Scope of verification
 
-Automated tests cover Gen 1–9 Dex loading, species metadata, empty `RuleTable`, moves, damage, switching, fainting, victory, protocol events, English text, optional team validation and raw `BattleStream`. They also check generation-specific data differences (including Bite's Gen 3/Gen 4 category) and `Future` on species from later generations. `examples/generations-test.ts` exercises the nine Link Battle formats.
+Automated tests cover Gen 1–9 Dex loading, species metadata, empty `RuleTable`, moves, damage, switching, fainting, victory, protocol events, English text, optional team validation and raw `BattleStream`. They also check generation-specific data differences (including Bite's Gen 3/Gen 4 category) and `Future` on species from later generations. `tests/generations-smoke.ts` exercises the nine Link Battle formats. The test TypeScript configuration is kept inside `tests/`, and the normal build excludes test files.

@@ -9,10 +9,10 @@
   "scripts": {
     "prebuild": "node tools/clean.mjs",
     "build": "tsc -p tsconfig.json",
-    "test": "npm run build && node tools/audit.mjs && node --test dist/tests/*.test.js",
-    "test:web": "npm run build && node tools/test-web.mjs",
+    "test": "npm run build && tsc -p tests/tsconfig.json && node tests/audit.mjs && node --test dist/tests/*.test.js",
+    "test:web": "npm run build && node tests/web/server.mjs",
     "example": "npm run build && node dist/examples/basic-battle.js",
-    "audit": "node tools/audit.mjs"
+    "audit": "node tests/audit.mjs"
   },
   "dependencies": {
     "ts-chacha20": "^1.2.0"
