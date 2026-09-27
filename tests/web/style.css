@@ -30,7 +30,6 @@ main { padding: 25px 0 60px; }
 .notice.error { background: #fff0ed; color: #a4352b; border-color: #f2c5be; }
 .mon-card { border: 1px solid #dbe5e7; border-radius: 13px; background: #fcfdfd; padding: 19px; }
 .mon-card + .mon-card { margin-top: 12px; }
-.mon-card.is-collapsed { padding-top: 11px; padding-bottom: 11px; }
 .card-heading { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-bottom: 15px; }
 .is-collapsed .card-heading { margin-bottom: 0; }
 .card-heading h3 { margin: 0; min-width: 0; font-size: 16px; overflow-wrap: anywhere; }
