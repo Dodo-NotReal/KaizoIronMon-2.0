@@ -66,6 +66,9 @@ main { padding: 25px 0 60px; }
 .picker-search { width: 100%; }
 .picker-count { margin: 7px 2px; color: #607681; font-size: 11px; line-height: 1.35; font-weight: 400; }
 .picker-options { max-height: 240px; overflow: auto; }
+.picker-group { margin-top: 6px; }
+.picker-group-title { padding: 8px 10px 4px; color: #315d65; font-size: 11px; font-weight: 800; letter-spacing: .04em; text-transform: uppercase; }
+.picker-group-divider { margin: 0 9px 5px; border: 0; border-top: 1px solid #bcd4d6; }
 .picker-option { display: block; width: 100%; padding: 8px 10px; border: 0; border-radius: 6px; background: transparent; text-align: left; color: #213c45; font-size: 13px; font-weight: 400; }
 .picker-option:hover, .picker-option:focus-visible { background: #e8f5f4; outline: none; }
 .picker-empty { padding: 8px 10px; color: #607681; font-size: 12px; font-weight: 400; }

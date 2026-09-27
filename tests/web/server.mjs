@@ -12,6 +12,7 @@ const port = Number(process.env.TEST_WEB_PORT || 3000);
 const catalogs = new Map();
 const battles = new Map();
 const stats = ['hp', 'atk', 'def', 'spa', 'spd', 'spe'];
+const sourceMethods = { L: 'level', M: 'machine', T: 'tutor', E: 'egg', S: 'event', R: 'special', D: 'dreamworld', V: 'transfer' };
 
 function generation(value) {
 	const gen = Number(value);
@@ -169,8 +170,38 @@ const server = createServer(async (request, response) => {
 			const id = url.searchParams.get('species');
 			if (!catalog(gen).species.some(species => species.id === id)) throw new Error('Specie non disponibile.');
 			const dex = Dex.mod(`gen${gen}`);
-			const names = [...dex.species.getMovePool(id)].map(move => dex.moves.get(move).name).sort();
-			return json(response, 200, { moves: names });
+			const pool = dex.species.getMovePool(id);
+			const fullLearnset = dex.species.getFullLearnset(id);
+			const sources = new Map();
+			let eggMovesOnly = false;
+			for (const { species, learnset } of fullLearnset) {
+				if (!eggMovesOnly) eggMovesOnly = dex.species.eggMovesOnly(species, dex.species.get(id));
+				for (const [moveId, entries] of Object.entries(learnset)) {
+					if (!pool.has(moveId)) continue;
+					const methods = sources.get(moveId) || { current: new Set(), older: false };
+					for (const source of entries) {
+						if (eggMovesOnly && !source.startsWith('9E')) continue;
+						const method = sourceMethods[source.charAt(1)];
+						if (!method) continue;
+						const sourceGen = Number(source.charAt(0));
+						if (sourceGen === gen) methods.current.add(method);
+						else if (sourceGen < gen) methods.older = true;
+					}
+					sources.set(moveId, methods);
+				}
+			}
+			const hasSketch = pool.has('sketch') && fullLearnset.some(({ learnset }) => !!learnset.sketch);
+			const moves = [...pool].map(moveId => {
+				const move = dex.moves.get(moveId);
+				const sourcesForMove = sources.get(moveId);
+				const methods = sourcesForMove?.current.size ? [...sourcesForMove.current] : sourcesForMove?.older ? ['transfer'] : [];
+				if (hasSketch && moveId !== 'sketch' && !move.flags['nosketch'] && !move.isNonstandard) methods.push('sketch');
+				if (!methods.length) methods.push('other');
+				return {
+					id: moveId, name: move.name, methods,
+				};
+			}).sort((a, b) => a.name.localeCompare(b.name));
+			return json(response, 200, { moves });
 		}
 		if (request.method === 'POST' && url.pathname === '/api/battles') {
 			const input = await body(request);

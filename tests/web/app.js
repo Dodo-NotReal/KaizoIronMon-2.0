@@ -1,5 +1,11 @@
 const statKeys = ['hp', 'atk', 'def', 'spa', 'spd', 'spe'];
 const statLabels = { hp: 'PS', atk: 'Att', def: 'Dif', spa: 'Att Sp', spd: 'Dif Sp', spe: 'Vel' };
+const moveGroups = [
+  ['level', 'Per livello'], ['machine', 'MT / MN'], ['egg', 'Uovo'], ['tutor', 'Insegnamosse'],
+  ['special', 'Mossa speciale'], ['event', 'Evento'], ['dreamworld', 'Dream World'],
+  ['transfer', 'Trasferimento'], ['sketch', 'Schizzo'], ['other', 'Metodo non classificato'],
+  ['outside', 'Altre mosse della generazione'],
+];
 const state = { gen: 9, catalog: null, players: [], opponents: [], session: null, learnsets: new Map() };
 const cardViews = new WeakMap();
 let loadVersion = 0;
@@ -160,12 +166,15 @@ async function loadLearnset(side, index) {
   try {
     if (!state.learnsets.has(key)) {
       const result = await api(`/api/learnset?gen=${gen}&species=${encodeURIComponent(species)}`);
-      state.learnsets.set(key, result.moves);
+      state.learnsets.set(key, result);
     }
     if (state.gen !== gen || teamFor(side)[index]?.species !== species) return;
     const cardKey = `${side}-${index}`;
     const hint = document.querySelector(`[data-learnset="${cardKey}"]`);
-    if (hint) hint.textContent = `${state.learnsets.get(key).length} mosse nel pool della specie. Puoi scegliere anche un’altra mossa della generazione per un test senza regole competitive.`;
+    if (hint) {
+      hint.textContent = `${state.learnsets.get(key).moves.length} mosse ottenibili dalla specie. Le altre mosse della generazione restano selezionabili per i test senza regole competitive.`;
+      hint.closest('.mon-card').querySelectorAll('.picker[data-field="move"][open]').forEach(renderPicker);
+    }
   } catch (error) {
     const hint = document.querySelector(`[data-learnset="${side}-${index}"]`);
     if (hint) hint.textContent = error.message;
@@ -288,12 +297,12 @@ function pickerValues(details) {
   case 'species': return state.catalog.species.map(mon => ({ value: mon.id, label: `#${mon.num} ${mon.name}`, search: `${mon.name} ${mon.id} ${mon.num}` }));
   case 'move': {
     const validMoves = new Set(state.catalog.moves.map(move => move.name));
-    const pool = (state.learnsets.get(`${state.gen}:${set.species}`) || []).filter(name => validMoves.has(name));
-    const known = new Set(pool);
+    const pool = (state.learnsets.get(`${state.gen}:${set.species}`)?.moves || []).filter(move => validMoves.has(move.name));
+    const known = new Set(pool.map(move => move.name));
     return [
       { value: '', label: 'Nessuna mossa', search: 'nessuna vuoto' },
-      ...pool.map(name => ({ value: name, label: `${name} · pool della specie`, search: name })),
-      ...state.catalog.moves.filter(move => !known.has(move.name)).map(move => ({ value: move.name, label: move.name, search: `${move.name} ${move.id}` })),
+      ...pool.flatMap(move => move.methods.map(group => ({ value: move.name, label: move.name, group, search: `${move.name} ${move.id} ${moveGroups.find(([id]) => id === group)?.[1] || ''}` }))),
+      ...state.catalog.moves.filter(move => !known.has(move.name)).map(move => ({ value: move.name, label: move.name, group: 'outside', search: `${move.name} ${move.id} Altre mosse della generazione` })),
     ];
   }
   case 'item': return [{ value: '', label: 'Nessuno', search: 'nessuno vuoto' }, ...state.catalog.items.map(item => ({ value: item.name, label: item.name, search: `${item.name} ${item.id}` }))];
@@ -309,10 +318,19 @@ function renderPicker(details) {
   const query = details.querySelector('.picker-search').value.trim().toLocaleLowerCase();
   const all = pickerValues(details);
   const matching = all.filter(option => option.search.toLocaleLowerCase().includes(query));
-  details.querySelector('.picker-count').textContent = `${matching.length} di ${all.length} voci · cerca per nome o numero; Invio per scegliere il nome esatto`;
-  details.querySelector('.picker-options').innerHTML = matching.length
-    ? matching.map(option => `<button type="button" role="option" class="picker-option" data-value="${escapeHtml(option.value)}">${escapeHtml(option.label)}</button>`).join('')
-    : '<p class="picker-empty">Nessun risultato nella mod selezionata.</p>';
+  const isMove = details.dataset.field === 'move';
+  const count = values => new Set(values.filter(option => option.value).map(option => option.value)).size;
+  details.querySelector('.picker-count').textContent = isMove
+    ? `${count(matching)} di ${count(all)} mosse · una mossa può comparire in più metodi`
+    : `${matching.length} di ${all.length} voci · cerca per nome o numero; Invio per scegliere il nome esatto`;
+  const button = option => `<button type="button" role="option" class="picker-option" data-value="${escapeHtml(option.value)}">${escapeHtml(option.label)}</button>`;
+  const list = details.querySelector('.picker-options');
+  if (!matching.length) { list.innerHTML = '<p class="picker-empty">Nessun risultato nella mod selezionata.</p>'; return; }
+  if (!isMove) { list.innerHTML = matching.map(button).join(''); return; }
+  list.innerHTML = matching.filter(option => !option.group).map(button).join('') + moveGroups.map(([group, title]) => {
+    const entries = matching.filter(option => option.group === group);
+    return entries.length ? `<div class="picker-group" role="group" aria-label="${escapeHtml(title)}"><div class="picker-group-title">${escapeHtml(title)}</div><hr class="picker-group-divider">${entries.map(button).join('')}</div>` : '';
+  }).join('');
 }
 
 function choosePicker(details, value) {
