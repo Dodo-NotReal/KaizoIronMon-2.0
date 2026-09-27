@@ -1,7 +1,7 @@
 :root { font-family: Inter, "Segoe UI", Arial, sans-serif; color: #182b39; background: #f3f6f7; }
 * { box-sizing: border-box; }
 body { margin: 0; }
-button, input, select { font: inherit; }
+button, input, select, textarea { font: inherit; }
 button { cursor: pointer; }
 .shell { width: min(1180px, calc(100% - 36px)); margin: 0 auto; }
 .masthead { color: #fff; background: linear-gradient(120deg, #092e39 0%, #15546a 72%, #196776 100%); padding: 43px 0 50px; }
@@ -30,9 +30,26 @@ main { padding: 25px 0 60px; }
 .notice.error { background: #fff0ed; color: #a4352b; border-color: #f2c5be; }
 .mon-card { border: 1px solid #dbe5e7; border-radius: 13px; background: #fcfdfd; padding: 19px; }
 .mon-card + .mon-card { margin-top: 12px; }
+.mon-card.is-collapsed { padding-top: 11px; padding-bottom: 11px; }
 .card-heading { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-bottom: 15px; }
-.card-heading h3 { margin: 0; font-size: 16px; }
-.remove-button { border: 0; background: transparent; color: #ac4639; font-size: 12px; font-weight: 700; }
+.is-collapsed .card-heading { margin-bottom: 0; }
+.card-heading h3 { margin: 0; min-width: 0; font-size: 16px; overflow-wrap: anywhere; }
+.card-actions { display: flex; justify-content: flex-end; align-items: center; flex-wrap: wrap; gap: 5px; margin-left: auto; }
+.card-action { border: 1px solid #d3e0e1; border-radius: 7px; background: #fff; color: #375f69; padding: 7px 9px; font-size: 11px; font-weight: 800; }
+.card-action:hover, .card-action:focus-visible { border-color: #188d91; background: #eaf6f5; }
+.card-action[aria-expanded="true"] { border-color: #8bc7c6; background: #e8f5f4; }
+.card-action[data-unsaved="true"]::after { content: ' ●'; color: #ad5928; }
+.remove-button { color: #ac4639; }
+.card-chevron { width: 32px; height: 31px; padding: 0; font-size: 22px; line-height: 1; transition: transform .15s ease; }
+.is-collapsed .card-chevron { transform: rotate(-90deg); }
+.card-body[hidden], .card-json[hidden] { display: none; }
+.card-json { margin: 0 0 18px; padding: 14px; border: 1px solid #c8dcdf; border-radius: 9px; background: #f1f7f7; }
+.card-json label { display: block; margin-bottom: 8px; color: #3c5a64; font-size: 12px; font-weight: 800; }
+.card-json textarea { display: block; width: 100%; min-height: 250px; resize: vertical; padding: 12px; border: 1px solid #bfd4d6; border-radius: 8px; background: #152e39; color: #e8f8f5; font: 12px/1.5 Consolas, monospace; tab-size: 2; }
+.card-json textarea:focus { outline: 3px solid #bde7e4; }
+.json-hint { margin: 8px 0 0; color: #5d747e; font-size: 12px; }
+.json-actions { display: flex; align-items: center; flex-wrap: wrap; gap: 12px; margin-top: 10px; }
+.json-error { color: #a4352b; font-size: 12px; font-weight: 700; }
 .form-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
 .field { display: flex; flex-direction: column; gap: 5px; min-width: 0; color: #48616e; font-size: 12px; font-weight: 700; }
 .field input, .field select { width: 100%; min-width: 0; border: 1px solid #cddbdd; border-radius: 8px; color: #172e39; background: #fff; padding: 9px 10px; outline: none; }
@@ -79,7 +96,6 @@ main { padding: 25px 0 60px; }
 .launch-panel > div:first-child { max-width: 670px; }
 .launch-panel .muted { margin: 9px 0 0; }
 .launch-actions { display: flex; align-items: end; gap: 8px; flex-wrap: wrap; }
-.team-json { width: 100%; max-height: 300px; overflow: auto; padding: 15px; border-radius: 10px; background: #142a34; color: #e8f8f5; font-size: 12px; }
 .battle-status { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
 .battle-side { border-radius: 10px; background: #f1f6f6; padding: 14px; }
 .battle-side strong { display: block; margin-bottom: 6px; }
@@ -91,4 +107,4 @@ main { padding: 25px 0 60px; }
 .battle-log { max-height: 340px; overflow: auto; border: 1px solid #dce7e8; border-radius: 9px; background: #f8fbfb; margin: 0; padding: 12px 12px 12px 36px; font: 12px/1.6 Consolas, monospace; color: #334c58; }
 .battle-log li { padding: 2px 0; }
 @media (max-width: 850px) { .form-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } .move-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } .stat-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } .form-grid .field:nth-child(even) .picker-menu, .move-grid .field:nth-child(even) .picker-menu { left: auto; right: 0; } }
-@media (max-width: 600px) { .masthead { padding: 30px 0; } .masthead-mark { display: none; } .panel { padding: 17px; } .mod-switch { grid-template-columns: repeat(3, 1fr); } .form-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } .field-wide { grid-column: span 2; } .battle-status { grid-template-columns: 1fr; } }
+@media (max-width: 600px) { .masthead { padding: 30px 0; } .masthead-mark { display: none; } .panel { padding: 17px; } .card-heading { flex-wrap: wrap; } .card-heading h3, .card-actions { width: 100%; } .mod-switch { grid-template-columns: repeat(3, 1fr); } .form-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } .field-wide { grid-column: span 2; } .battle-status { grid-template-columns: 1fr; } }

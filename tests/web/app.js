@@ -1,6 +1,7 @@
 const statKeys = ['hp', 'atk', 'def', 'spa', 'spd', 'spe'];
 const statLabels = { hp: 'PS', atk: 'Att', def: 'Dif', spa: 'Att Sp', spd: 'Dif Sp', spe: 'Vel' };
 const state = { gen: 9, catalog: null, players: [], opponents: [], session: null, learnsets: new Map() };
+const cardViews = new WeakMap();
 let loadVersion = 0;
 let choosing = false;
 
@@ -37,6 +38,10 @@ function speciesById(id) { return state.catalog.species.find(mon => mon.id === i
 function speciesByName(name) {
   return state.catalog.species.find(mon => mon.name.toLowerCase() === name.trim().toLowerCase() || mon.id === name.trim().toLowerCase());
 }
+function cardView(set) {
+  if (!cardViews.has(set)) cardViews.set(set, { expanded: true, jsonOpen: false, jsonDraft: null });
+  return cardViews.get(set);
+}
 function emptySet(preferred) {
   const species = state.catalog.species.find(mon => mon.name === preferred) || state.catalog.species[0];
   const iv = state.gen <= 2 ? 30 : 31;
@@ -45,6 +50,20 @@ function emptySet(preferred) {
     item: '', ability: state.gen >= 3 ? species.abilities[0] || '' : '',
     nature: state.gen >= 3 ? 'Hardy' : '', gender: state.gen >= 2 ? species.gender || '' : '',
     moves: [preferred === 'Pikachu' ? 'Quick Attack' : 'Tackle', '', '', ''],
+    evs: Object.fromEntries(statKeys.map(stat => [stat, 0])),
+    ivs: Object.fromEntries(statKeys.map(stat => [stat, iv])),
+    happiness: 255, shiny: false, dynamaxLevel: 10, gigantamax: false, teraType: '',
+  };
+}
+
+function resetSet(set) {
+  const species = speciesById(set.species);
+  const iv = state.gen <= 2 ? 30 : 31;
+  return {
+    species: species.id, name: species.name, level: 50,
+    item: '', ability: state.gen >= 3 ? species.abilities[0] || '' : '',
+    nature: state.gen >= 3 ? 'Hardy' : '', gender: state.gen >= 2 ? species.gender || '' : '',
+    moves: ['', '', '', ''],
     evs: Object.fromEntries(statKeys.map(stat => [stat, 0])),
     ivs: Object.fromEntries(statKeys.map(stat => [stat, iv])),
     happiness: 255, shiny: false, dynamaxLevel: 10, gigantamax: false, teraType: '',
@@ -76,6 +95,9 @@ function field(label, control, wide = false) {
 
 function renderCard(set, side, index) {
   const species = speciesById(set.species);
+  const view = cardView(set);
+  const cardId = `card-${side}-${index}`;
+  const canRemove = teamFor(side).length > 1;
   const attr = `data-side="${side}" data-index="${index}"`;
   const input = (name, value, extra = '') => `<input ${attr} data-field="${name}" value="${escapeHtml(value)}" ${extra}>`;
   const choose = (name, value, moveIndex) => picker(name, value, side, index, moveIndex);
@@ -101,8 +123,24 @@ function renderCard(set, side, index) {
     state.gen === 8 && species.canGigantamax ? `<label class="check-field"><input ${attr} data-field="gigantamax" type="checkbox" ${set.gigantamax ? 'checked' : ''}> Gigamax</label>` : '',
     state.gen === 9 ? field('Tipo Tera', choose('teraType', set.teraType)) : '',
   ].join('');
-  return `<article class="mon-card">
-    <div class="card-heading"><h3>${side === 'player' ? `Giocatore ${index + 1}` : `Avversario ${index + 1}`}</h3><button class="remove-button" type="button" data-remove="${index}" ${state[side === 'player' ? 'players' : 'opponents'].length === 1 ? 'disabled' : ''}>Rimuovi</button></div>
+  const json = view.jsonDraft ?? JSON.stringify(payloadSet(set), null, 2);
+  return `<article class="mon-card ${view.expanded ? '' : 'is-collapsed'}" ${attr}>
+    <div class="card-heading">
+      <h3>${escapeHtml(species.name)}</h3>
+      <div class="card-actions">
+        <button class="card-action" type="button" data-card-json data-unsaved="${view.jsonDraft !== null}" aria-expanded="${view.expanded && view.jsonOpen}" aria-controls="${cardId}-json" aria-label="JSON di ${escapeHtml(species.name)}${view.jsonDraft !== null ? ', modifiche da applicare' : ''}">JSON</button>
+        <button class="card-action" type="button" data-card-reset>RESET</button>
+        ${canRemove ? '<button class="card-action remove-button" type="button" data-card-remove>Rimuovi</button>' : ''}
+        <button class="card-action card-chevron" type="button" data-card-collapse aria-expanded="${view.expanded}" aria-controls="${cardId}-body" aria-label="${view.expanded ? 'Chiudi' : 'Apri'} scheda di ${escapeHtml(species.name)}">⌄</button>
+      </div>
+    </div>
+    <div id="${cardId}-body" class="card-body" ${view.expanded ? '' : 'hidden'}>
+    <section id="${cardId}-json" class="card-json" ${view.jsonOpen ? '' : 'hidden'}>
+      <label for="${cardId}-editor">Dati JSON di ${escapeHtml(species.name)}</label>
+      <textarea id="${cardId}-editor" data-json-editor spellcheck="false">${escapeHtml(json)}</textarea>
+      <p class="json-hint">Le modifiche diventano attive quando premi Applica JSON.</p>
+      <div class="json-actions"><button class="button button-primary" type="button" data-json-apply>Applica JSON</button><span class="json-error" role="alert"></span></div>
+    </section>
     <div class="form-grid">${basics}</div>
     <p class="subheading">Statistiche base · Mod Gen ${state.gen}</p><div class="stat-chips">${baseStats}</div>
     <p class="subheading">Mosse</p><div class="move-grid">${moveInputs}</div>
@@ -110,6 +148,7 @@ function renderCard(set, side, index) {
     <p class="subheading">EV · 0–255 per statistica</p>${statInput('ev')}
     <p class="subheading">${state.gen <= 2 ? 'DV · valori pari 0–30' : 'IV · 0–31'}</p>${statInput('iv')}
     <div class="form-grid extra-grid">${extras}</div>
+    </div>
   </article>`;
 }
 
@@ -166,9 +205,11 @@ async function switchGen(gen) {
     state.catalog = catalog;
     state.players = previousPlayers.length ? previousPlayers.map(set => adaptSet(set, 'Pikachu')) : [emptySet('Pikachu')];
     state.opponents = previousOpponents?.length ? previousOpponents.map(set => adaptSet(set, 'Bulbasaur')) : [emptySet('Bulbasaur')];
+    for (const [before, after] of [...previousPlayers.map((set, index) => [set, state.players[index]]), ...previousOpponents.map((set, index) => [set, state.opponents[index]])]) {
+      if (cardViews.has(before)) cardViews.set(after, { ...cardViews.get(before) });
+    }
     state.session = null;
     $('#battle-panel').hidden = true;
-    $('#team-json').hidden = true;
     renderMod();
     renderCards();
     notify('');
@@ -187,6 +228,57 @@ function updateField(event) {
   else if (target.type === 'checkbox') set[name] = target.checked;
   else if (target.type === 'number') set[name] = Number(target.value);
   else set[name] = target.value;
+  syncCardJson(set, target.closest('.mon-card'));
+}
+
+function syncCardJson(set, card) {
+  if (cardView(set).jsonDraft !== null) return;
+  const editor = card?.querySelector('[data-json-editor]');
+  if (editor) editor.value = JSON.stringify(payloadSet(set), null, 2);
+}
+
+function readEditedSet(text, current) {
+  let raw;
+  try { raw = JSON.parse(text); } catch { throw new Error('Il JSON non è valido.'); }
+  if (!raw || typeof raw !== 'object' || Array.isArray(raw)) throw new Error('Il JSON deve contenere un Pokémon.');
+  const required = ['species', 'name', 'level', 'item', 'ability', 'nature', 'gender', 'moves', 'evs', 'ivs', 'happiness', 'shiny'];
+  if (state.gen === 8) required.push('dynamaxLevel', 'gigantamax');
+  if (state.gen === 9) required.push('teraType');
+  const missing = required.find(key => !Object.hasOwn(raw, key));
+  if (missing) throw new Error(`Manca il campo ${missing}.`);
+  const extra = Object.keys(raw).find(key => !required.includes(key));
+  if (extra) throw new Error(`Il campo ${extra} non è usato dalla pagina di test.`);
+  if (typeof raw.species !== 'string') throw new Error('Specie non valida.');
+  const species = speciesById(raw.species) || speciesByName(raw.species);
+  if (!species) throw new Error(`Specie non disponibile in Gen ${state.gen}.`);
+  if (typeof raw.name !== 'string' || raw.name.length > 18) throw new Error('Il soprannome deve avere al massimo 18 caratteri.');
+  const number = (value, min, max, label) => {
+    if (!Number.isInteger(value) || value < min || value > max) throw new Error(`${label}: usa un intero da ${min} a ${max}.`);
+  };
+  number(raw.level, 1, 100, 'Livello');
+  number(raw.happiness, 0, 255, 'Amicizia');
+  if (typeof raw.shiny !== 'boolean') throw new Error('Cromatico deve essere true o false.');
+  if (typeof raw.item !== 'string' || (raw.item && !state.catalog.items.some(item => item.name === raw.item))) throw new Error('Strumento non disponibile nella generazione.');
+  if (typeof raw.ability !== 'string' || (raw.ability && !species.abilities.includes(raw.ability))) throw new Error('Abilità non disponibile per questa specie.');
+  if (typeof raw.nature !== 'string' || (raw.nature && !state.catalog.natures.includes(raw.nature))) throw new Error('Natura non valida.');
+  if (state.gen === 1 && (raw.item || raw.gender || raw.happiness !== 255 || raw.shiny)) throw new Error('Strumento, sesso, amicizia e cromatico non sono disponibili in Gen 1.');
+  if (state.gen <= 2 && (raw.ability || raw.nature)) throw new Error('Abilità e natura non sono disponibili in Gen 1 e 2.');
+  if (typeof raw.gender !== 'string' || (raw.gender && !['M', 'F', 'N'].includes(raw.gender)) || (species.gender && raw.gender && species.gender !== raw.gender)) throw new Error('Sesso non disponibile per questa specie.');
+  if (!Array.isArray(raw.moves) || raw.moves.length > 4 || raw.moves.some(move => typeof move !== 'string' || (move && !state.catalog.moves.some(option => option.name === move)))) throw new Error('Mosse: inserisci fino a quattro nomi presenti nella generazione.');
+  for (const [key, limit] of [['evs', 255], ['ivs', state.gen <= 2 ? 30 : 31]]) {
+    const values = raw[key];
+    if (!values || typeof values !== 'object' || Array.isArray(values) || Object.keys(values).some(stat => !statKeys.includes(stat))) throw new Error(`${key}: inserisci le sei statistiche.`);
+    for (const stat of statKeys) {
+      number(values[stat], 0, limit, `${key} ${stat}`);
+      if (key === 'ivs' && state.gen <= 2 && values[stat] % 2) throw new Error(`DV ${stat}: serve un valore pari.`);
+    }
+  }
+  if (state.gen === 8) {
+    number(raw.dynamaxLevel, 0, 10, 'Livello Dynamax');
+    if (typeof raw.gigantamax !== 'boolean' || (raw.gigantamax && !species.canGigantamax)) throw new Error('Gigamax non valido per questa specie.');
+  }
+  if (state.gen === 9 && (typeof raw.teraType !== 'string' || (raw.teraType && !state.catalog.types.includes(raw.teraType)))) throw new Error('Tipo Tera non valido.');
+  return { ...current, ...raw, species: species.id, moves: [...raw.moves, '', '', '', ''].slice(0, 4), evs: { ...raw.evs }, ivs: { ...raw.ivs } };
 }
 
 function pickerValues(details) {
@@ -207,7 +299,7 @@ function pickerValues(details) {
   case 'item': return [{ value: '', label: 'Nessuno', search: 'nessuno vuoto' }, ...state.catalog.items.map(item => ({ value: item.name, label: item.name, search: `${item.name} ${item.id}` }))];
   case 'ability': return [...new Set(species.abilities)].map(value => ({ value, label: value, search: value }));
   case 'nature': return state.catalog.natures.map(value => ({ value, label: value, search: value }));
-  case 'gender': return (species.gender ? [species.gender] : ['', 'M', 'F']).map(value => ({ value, label: value || 'Non specificato', search: value || 'non specificato' }));
+  case 'gender': return (species.gender ? [species.gender] : ['', 'M', 'F', 'N']).map(value => ({ value, label: value || 'Non specificato', search: value || 'non specificato' }));
   case 'teraType': return ['', ...state.catalog.types].map(value => ({ value, label: value || 'Nessuno', search: value || 'nessuno' }));
   default: return [];
   }
@@ -301,6 +393,10 @@ function renderBattle(snapshot, append = false) {
 }
 
 async function startBattle() {
+  if ([...state.players, ...state.opponents].some(set => cardView(set).jsonDraft !== null)) {
+    notify('Applica il JSON modificato prima di avviare la battaglia.', true);
+    return;
+  }
   const button = $('#start-battle');
   button.disabled = true;
   notify('Avvio della battaglia…');
@@ -335,7 +431,14 @@ $('#mod-switch').addEventListener('click', event => {
 });
 for (const host of [$('#player-cards'), $('#opponent-cards')]) {
   host.addEventListener('input', event => {
-    if (event.target.matches('.picker-search')) renderPicker(event.target.closest('.picker'));
+    if (event.target.matches('[data-json-editor]')) {
+      const card = event.target.closest('.mon-card');
+      const set = teamFor(card.dataset.side)[Number(card.dataset.index)];
+      cardView(set).jsonDraft = event.target.value;
+      card.querySelector('[data-card-json]').dataset.unsaved = 'true';
+      card.querySelector('[data-card-json]').setAttribute('aria-label', `JSON di ${speciesById(set.species).name}, modifiche da applicare`);
+      event.target.closest('.card-json').querySelector('.json-error').textContent = '';
+    } else if (event.target.matches('.picker-search')) renderPicker(event.target.closest('.picker'));
     else updateField(event);
   });
   host.addEventListener('change', updateField);
@@ -362,13 +465,48 @@ for (const host of [$('#player-cards'), $('#opponent-cards')]) {
   host.addEventListener('click', event => {
     const choice = event.target.closest('.picker-option');
     if (choice) { choosePicker(choice.closest('.picker'), choice.dataset.value); return; }
-    const button = event.target.closest('[data-remove]');
-    if (!button) return;
-    const side = host.id === 'player-cards' ? 'player' : 'opponent';
-    const team = teamFor(side);
-    if (team.length <= 1) return;
-    team.splice(Number(button.dataset.remove), 1);
-    renderCards();
+    const card = event.target.closest('.mon-card');
+    if (!card) return;
+    const team = teamFor(card.dataset.side);
+    const index = Number(card.dataset.index);
+    const set = team[index];
+    const view = cardView(set);
+    if (event.target.closest('[data-card-json]')) {
+      if (!view.expanded) { view.expanded = true; view.jsonOpen = true; }
+      else view.jsonOpen = !view.jsonOpen;
+      renderCards();
+      return;
+    }
+    if (event.target.closest('[data-card-collapse]')) {
+      view.expanded = !view.expanded;
+      renderCards();
+      return;
+    }
+    if (event.target.closest('[data-card-reset]')) {
+      const replacement = resetSet(set);
+      cardViews.set(replacement, { expanded: true, jsonOpen: view.jsonOpen, jsonDraft: null });
+      team[index] = replacement;
+      renderCards();
+      notify(`Configurazione di ${speciesById(replacement.species).name} ripristinata. Scegli almeno una mossa prima della battaglia.`);
+      return;
+    }
+    if (event.target.closest('[data-card-remove]')) {
+      if (team.length <= 1) return;
+      team.splice(index, 1);
+      renderCards();
+      return;
+    }
+    if (event.target.closest('[data-json-apply]')) {
+      try {
+        const replacement = readEditedSet(card.querySelector('[data-json-editor]').value, set);
+        cardViews.set(replacement, { expanded: true, jsonOpen: true, jsonDraft: null });
+        team[index] = replacement;
+        renderCards();
+        notify(`JSON di ${speciesById(replacement.species).name} applicato.`);
+      } catch (error) {
+        card.querySelector('.json-error').textContent = error.message;
+      }
+    }
   });
 }
 $('#add-player').addEventListener('click', () => {
@@ -380,11 +518,6 @@ $('#add-opponent').addEventListener('click', () => {
   if (state.opponents.length >= 6) return;
   state.opponents.push(emptySet('Bulbasaur'));
   renderCards();
-});
-$('#show-json').addEventListener('click', () => {
-  const pre = $('#team-json');
-  pre.textContent = JSON.stringify(payload(), null, 2);
-  pre.hidden = !pre.hidden;
 });
 $('#start-battle').addEventListener('click', startBattle);
 $('#battle-actions').addEventListener('click', event => {
