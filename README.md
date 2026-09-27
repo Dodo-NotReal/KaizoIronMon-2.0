@@ -91,9 +91,23 @@ if (problems) console.error(problems);
 
 After `npm install`, run `npm run test:web` and open `http://127.0.0.1:3000` in a browser. The server listens only on the local computer. Stop it with Ctrl+C.
 
-Select a Gen 1–9 mod, configure one player Pokémon and add 1–6 opponent Pokémon, then select **Avvia test battaglia**. Choose the player's moves to advance turns; the opponent uses its first available move and switches to the next available Pokémon when needed. **Mostra JSON squadre** displays the current team data for copying into other tests.
+Select a Gen 1–9 mod, configure 1–6 player Pokémon and 1–6 opponent Pokémon, then select **Avvia test battaglia**. Choose a move or switch to another available player Pokémon; the opponent uses its first available move and switches when needed. **Mostra JSON squadre** displays both teams for copying into other tests.
 
-The selected mod supplies species, forms, base stats, abilities, moves and items. The page lets you edit level, moves, EVs, IVs, friendship and the fields applicable to the generation (including Dynamax in Gen 8 and Tera type in Gen 9). Base stats are displayed from the mod and are not changed by an individual Pokémon set. This is a local test harness, not a competitive legality checker.
+The selected mod supplies species, forms, base stats, abilities, moves and items. Open a Pokémon data menu to see its full list, then type in the menu to filter by name (or Pokédex number for species). Press Enter to select an exact name or click a result. Pikachu and Bulbasaur are just the initial selections: the menu does not limit the catalog to them. You can customize nickname, level, EVs, IVs, friendship and the generation-specific fields (including Dynamax in Gen 8 and Tera type in Gen 9). Species, abilities, items, moves, natures and Tera types must exist in the selected mod; arbitrary names cannot be used by the battle engine. Base stats come from the mod and are not changed by an individual Pokémon set. This is a local test harness, not a competitive legality checker.
+
+### Removing the test harness later
+
+All test-only source files can be removed by deleting the entire `tests/` directory. This includes `tests/engine.test.ts`, `tests/audit.mjs`, `tests/generations-smoke.ts`, `tests/battle-text-smoke.ts`, `tests/tsconfig.json`, `tests/README.md`, and the four web files `tests/web/index.html`, `tests/web/app.js`, `tests/web/style.css`, `tests/web/server.mjs`.
+
+After deleting that directory, remove these references outside it:
+
+| File | Test-related content to remove or update |
+| --- | --- |
+| `package.json` | The `test`, `test:web` and `audit` scripts. |
+| `README.md` | `npm test` in the command block and its explanation, this local battle test page section, this removal guide, and the `tests/` line in the directory layout. |
+| `ARCHITECTURE.md` | The `tests/audit.mjs` paragraph in **Removed code** and the **Scope of verification** section, which describes the test suite and smoke script. |
+
+The generated `dist/tests/` output can be cleared with the normal build cleanup (`npm run build`); `dist/` is ignored by Git. The production build does not include `tests/` as source. `tools/clean.mjs` and `examples/teams.ts` are also used outside tests and should stay.
 
 ## Raw BattleStream protocol
 

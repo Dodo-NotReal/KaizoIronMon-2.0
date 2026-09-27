@@ -1,6 +1,6 @@
 const statKeys = ['hp', 'atk', 'def', 'spa', 'spd', 'spe'];
 const statLabels = { hp: 'PS', atk: 'Att', def: 'Dif', spa: 'Att Sp', spd: 'Dif Sp', spe: 'Vel' };
-const state = { gen: 9, catalog: null, player: null, opponents: [], session: null, learnsets: new Map() };
+const state = { gen: 9, catalog: null, players: [], opponents: [], session: null, learnsets: new Map() };
 let loadVersion = 0;
 let choosing = false;
 
@@ -8,7 +8,16 @@ const $ = selector => document.querySelector(selector);
 const escapeHtml = value => String(value ?? '').replace(/[&<>"']/g, char => ({
   '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;',
 })[char]);
-const options = (values, chosen, empty = '') => `${empty ? `<option value="">${escapeHtml(empty)}</option>` : ''}${values.map(value => `<option value="${escapeHtml(value)}" ${value === chosen ? 'selected' : ''}>${escapeHtml(value)}</option>`).join('')}`;
+function picker(name, value, side, index, moveIndex = '') {
+  const move = moveIndex === '' ? '' : ` data-move="${moveIndex}"`;
+  return `<details class="picker" data-side="${side}" data-index="${index}" data-field="${name}"${move}>
+    <summary aria-label="Apri elenco ${name}"><span>${escapeHtml(value || 'Nessuno')}</span></summary>
+    <div class="picker-menu">
+      <input class="picker-search" type="search" autocomplete="off" placeholder="Cerca o scrivi un nome…" aria-label="Filtra ${name}">
+      <p class="picker-count"></p><div class="picker-options" role="listbox"></div>
+    </div>
+  </details>`;
+}
 
 function notify(message, error = false) {
   const box = $('#notice');
@@ -26,7 +35,7 @@ async function api(url, init) {
 
 function speciesById(id) { return state.catalog.species.find(mon => mon.id === id); }
 function speciesByName(name) {
-  return state.catalog.species.find(mon => mon.name.toLowerCase() === name.trim().toLowerCase());
+  return state.catalog.species.find(mon => mon.name.toLowerCase() === name.trim().toLowerCase() || mon.id === name.trim().toLowerCase());
 }
 function emptySet(preferred) {
   const species = state.catalog.species.find(mon => mon.name === preferred) || state.catalog.species[0];
@@ -61,29 +70,28 @@ function adaptSet(set, preferred) {
 }
 
 function field(label, control, wide = false) {
-  return `<label class="field ${wide ? 'field-wide' : ''}"><span>${label}</span>${control}</label>`;
+  const tag = control.startsWith('<details') ? 'div' : 'label';
+  return `<${tag} class="field ${wide ? 'field-wide' : ''}"><span>${label}</span>${control}</${tag}>`;
 }
 
 function renderCard(set, side, index) {
   const species = speciesById(set.species);
-  const key = `${side}-${index}`;
   const attr = `data-side="${side}" data-index="${index}"`;
   const input = (name, value, extra = '') => `<input ${attr} data-field="${name}" value="${escapeHtml(value)}" ${extra}>`;
-  const select = (name, values, value, empty = '') => `<select ${attr} data-field="${name}">${options(values, value, empty)}</select>`;
-  const ability = state.gen >= 3 ? field('Abilità', select('ability', [...new Set(species.abilities)], set.ability)) : '';
-  const item = state.gen >= 2 ? field('Strumento', input('item', set.item, 'list="item-list" placeholder="Nessuno"')) : '';
-  const nature = state.gen >= 3 ? field('Natura', select('nature', state.catalog.natures, set.nature)) : '';
-  const genderChoices = species.gender ? [species.gender] : ['', 'M', 'F'];
-  const gender = state.gen >= 2 ? field('Sesso', select('gender', genderChoices, set.gender)) : '';
+  const choose = (name, value, moveIndex) => picker(name, value, side, index, moveIndex);
+  const ability = state.gen >= 3 ? field('Abilità', choose('ability', set.ability)) : '';
+  const item = state.gen >= 2 ? field('Strumento', choose('item', set.item)) : '';
+  const nature = state.gen >= 3 ? field('Natura', choose('nature', set.nature)) : '';
+  const gender = state.gen >= 2 ? field('Sesso', choose('gender', set.gender)) : '';
   const basics = [
-    field('Specie / forma', input('species', species.name, 'list="species-list" autocomplete="off"'), true),
+    field('Specie / forma', choose('species', species.name), true),
     field('Soprannome', input('name', set.name, 'maxlength="18"')),
     field('Livello', input('level', set.level, 'type="number" min="1" max="100"')),
     ability, item, nature, gender,
   ].join('');
   const baseStats = statKeys.map(stat => `<span>${statLabels[stat]} <b>${species.baseStats[stat]}</b></span>`).join('');
   const moveInputs = set.moves.map((move, moveIndex) => field(`Mossa ${moveIndex + 1}`,
-    `<input ${attr} data-field="move" data-move="${moveIndex}" list="moves-${key}" value="${escapeHtml(move)}" autocomplete="off" placeholder="${moveIndex ? 'Opzionale' : 'Obbligatoria'}">`)).join('');
+    choose('move', move, moveIndex))).join('');
   const statInput = kind => `<div class="stat-grid">${statKeys.map(stat => field(statLabels[stat],
     `<input ${attr} data-field="${kind}" data-stat="${stat}" type="number" min="0" max="${kind === 'iv' ? state.gen <= 2 ? 30 : 31 : 255}" step="${kind === 'iv' && state.gen <= 2 ? 2 : 1}" value="${set[kind === 'iv' ? 'ivs' : 'evs'][stat]}">`)).join('')}</div>`;
   const extras = [
@@ -91,14 +99,14 @@ function renderCard(set, side, index) {
     state.gen >= 2 ? `<label class="check-field"><input ${attr} data-field="shiny" type="checkbox" ${set.shiny ? 'checked' : ''}> Cromatico</label>` : '',
     state.gen === 8 ? field('Livello Dynamax', input('dynamaxLevel', set.dynamaxLevel, 'type="number" min="0" max="10"')) : '',
     state.gen === 8 && species.canGigantamax ? `<label class="check-field"><input ${attr} data-field="gigantamax" type="checkbox" ${set.gigantamax ? 'checked' : ''}> Gigamax</label>` : '',
-    state.gen === 9 ? field('Tipo Tera', select('teraType', state.catalog.types, set.teraType, 'Nessuno')) : '',
+    state.gen === 9 ? field('Tipo Tera', choose('teraType', set.teraType)) : '',
   ].join('');
   return `<article class="mon-card">
-    <div class="card-heading"><h3>${side === 'player' ? 'Pokémon del giocatore' : `Avversario ${index + 1}`}</h3>${side === 'opponent' ? `<button class="remove-button" type="button" data-remove="${index}" ${state.opponents.length === 1 ? 'disabled' : ''}>Rimuovi</button>` : ''}</div>
+    <div class="card-heading"><h3>${side === 'player' ? `Giocatore ${index + 1}` : `Avversario ${index + 1}`}</h3><button class="remove-button" type="button" data-remove="${index}" ${state[side === 'player' ? 'players' : 'opponents'].length === 1 ? 'disabled' : ''}>Rimuovi</button></div>
     <div class="form-grid">${basics}</div>
     <p class="subheading">Statistiche base · Mod Gen ${state.gen}</p><div class="stat-chips">${baseStats}</div>
-    <p class="subheading">Mosse</p><div class="move-grid">${moveInputs}</div><datalist id="moves-${key}"></datalist>
-    <p class="move-hint" data-learnset="${key}">Caricamento mosse apprese…</p>
+    <p class="subheading">Mosse</p><div class="move-grid">${moveInputs}</div>
+    <p class="move-hint" data-learnset="${side}-${index}">Caricamento mosse apprese…</p>
     <p class="subheading">EV · 0–255 per statistica</p>${statInput('ev')}
     <p class="subheading">${state.gen <= 2 ? 'DV · valori pari 0–30' : 'IV · 0–31'}</p>${statInput('iv')}
     <div class="form-grid extra-grid">${extras}</div>
@@ -106,7 +114,7 @@ function renderCard(set, side, index) {
 }
 
 async function loadLearnset(side, index) {
-  const set = side === 'player' ? state.player : state.opponents[index];
+  const set = teamFor(side)[index];
   const gen = state.gen;
   const species = set.species;
   const key = `${gen}:${species}`;
@@ -115,24 +123,26 @@ async function loadLearnset(side, index) {
       const result = await api(`/api/learnset?gen=${gen}&species=${encodeURIComponent(species)}`);
       state.learnsets.set(key, result.moves);
     }
-    if (state.gen !== gen || (side === 'player' ? state.player : state.opponents[index])?.species !== species) return;
+    if (state.gen !== gen || teamFor(side)[index]?.species !== species) return;
     const cardKey = `${side}-${index}`;
-    const list = document.getElementById(`moves-${cardKey}`);
     const hint = document.querySelector(`[data-learnset="${cardKey}"]`);
-    if (list) list.innerHTML = state.learnsets.get(key).map(move => `<option value="${escapeHtml(move)}"></option>`).join('');
-    if (hint) hint.textContent = `${state.learnsets.get(key).length} mosse nel pool della specie. Puoi anche digitare un’altra mossa della generazione per un test senza regole competitive.`;
+    if (hint) hint.textContent = `${state.learnsets.get(key).length} mosse nel pool della specie. Puoi scegliere anche un’altra mossa della generazione per un test senza regole competitive.`;
   } catch (error) {
     const hint = document.querySelector(`[data-learnset="${side}-${index}"]`);
     if (hint) hint.textContent = error.message;
   }
 }
 
+function teamFor(side) { return side === 'player' ? state.players : state.opponents; }
+
 function renderCards() {
-  $('#player-card').innerHTML = renderCard(state.player, 'player', 0);
+  $('#player-cards').innerHTML = state.players.map((set, index) => renderCard(set, 'player', index)).join('');
   $('#opponent-cards').innerHTML = state.opponents.map((set, index) => renderCard(set, 'opponent', index)).join('');
+  $('#player-count').textContent = `${state.players.length} / 6 Pokémon`;
   $('#opponent-count').textContent = `${state.opponents.length} / 6 Pokémon`;
+  $('#add-player').disabled = state.players.length >= 6;
   $('#add-opponent').disabled = state.opponents.length >= 6;
-  loadLearnset('player', 0);
+  state.players.forEach((_, index) => loadLearnset('player', index));
   state.opponents.forEach((_, index) => loadLearnset('opponent', index));
 }
 
@@ -141,8 +151,6 @@ function renderMod() {
     .map(gen => `<button class="mod-button" type="button" data-gen="${gen}" aria-pressed="${gen === state.gen}">Gen ${gen}</button>`).join('');
   $('#mod-badge').textContent = `Mod Gen ${state.gen}`;
   $('#mod-note').textContent = `${state.catalog.species.length} specie e forme · ${state.catalog.moves.length} mosse · ${state.catalog.items.length} strumenti. ${state.gen <= 2 ? 'Gen 1–2: niente abilità o nature; i DV sono pari.' : state.gen === 8 ? 'Gen 8: Dynamax e Gigamax disponibili.' : state.gen === 9 ? 'Gen 9: tipo Tera disponibile.' : 'Abilità e nature disponibili.'}`;
-  $('#species-list').innerHTML = state.catalog.species.map(mon => `<option value="${escapeHtml(mon.name)}"></option>`).join('');
-  $('#item-list').innerHTML = state.catalog.items.map(item => `<option value="${escapeHtml(item.name)}"></option>`).join('');
 }
 
 async function switchGen(gen) {
@@ -150,13 +158,13 @@ async function switchGen(gen) {
   const version = ++loadVersion;
   notify('Caricamento della mod…');
   try {
-    const previousPlayer = state.player;
+    const previousPlayers = state.players;
     const previousOpponents = state.opponents;
     const catalog = await api(`/api/catalog?gen=${gen}`);
     if (version !== loadVersion) return;
     state.gen = gen;
     state.catalog = catalog;
-    state.player = previousPlayer ? adaptSet(previousPlayer, 'Pikachu') : emptySet('Pikachu');
+    state.players = previousPlayers.length ? previousPlayers.map(set => adaptSet(set, 'Pikachu')) : [emptySet('Pikachu')];
     state.opponents = previousOpponents?.length ? previousOpponents.map(set => adaptSet(set, 'Bulbasaur')) : [emptySet('Bulbasaur')];
     state.session = null;
     $('#battle-panel').hidden = true;
@@ -172,28 +180,67 @@ function updateField(event) {
   if (!target.dataset.field) return;
   const side = target.dataset.side;
   const index = Number(target.dataset.index);
-  const set = side === 'player' ? state.player : state.opponents[index];
+  const set = teamFor(side)[index];
   if (!set) return;
   const name = target.dataset.field;
+  if (name === 'ev' || name === 'iv') set[name === 'ev' ? 'evs' : 'ivs'][target.dataset.stat] = Number(target.value);
+  else if (target.type === 'checkbox') set[name] = target.checked;
+  else if (target.type === 'number') set[name] = Number(target.value);
+  else set[name] = target.value;
+}
+
+function pickerValues(details) {
+  const set = teamFor(details.dataset.side)[Number(details.dataset.index)];
+  const species = speciesById(set.species);
+  switch (details.dataset.field) {
+  case 'species': return state.catalog.species.map(mon => ({ value: mon.id, label: `#${mon.num} ${mon.name}`, search: `${mon.name} ${mon.id} ${mon.num}` }));
+  case 'move': {
+    const validMoves = new Set(state.catalog.moves.map(move => move.name));
+    const pool = (state.learnsets.get(`${state.gen}:${set.species}`) || []).filter(name => validMoves.has(name));
+    const known = new Set(pool);
+    return [
+      { value: '', label: 'Nessuna mossa', search: 'nessuna vuoto' },
+      ...pool.map(name => ({ value: name, label: `${name} · pool della specie`, search: name })),
+      ...state.catalog.moves.filter(move => !known.has(move.name)).map(move => ({ value: move.name, label: move.name, search: `${move.name} ${move.id}` })),
+    ];
+  }
+  case 'item': return [{ value: '', label: 'Nessuno', search: 'nessuno vuoto' }, ...state.catalog.items.map(item => ({ value: item.name, label: item.name, search: `${item.name} ${item.id}` }))];
+  case 'ability': return [...new Set(species.abilities)].map(value => ({ value, label: value, search: value }));
+  case 'nature': return state.catalog.natures.map(value => ({ value, label: value, search: value }));
+  case 'gender': return (species.gender ? [species.gender] : ['', 'M', 'F']).map(value => ({ value, label: value || 'Non specificato', search: value || 'non specificato' }));
+  case 'teraType': return ['', ...state.catalog.types].map(value => ({ value, label: value || 'Nessuno', search: value || 'nessuno' }));
+  default: return [];
+  }
+}
+
+function renderPicker(details) {
+  const query = details.querySelector('.picker-search').value.trim().toLocaleLowerCase();
+  const all = pickerValues(details);
+  const matching = all.filter(option => option.search.toLocaleLowerCase().includes(query));
+  details.querySelector('.picker-count').textContent = `${matching.length} di ${all.length} voci · cerca per nome o numero; Invio per scegliere il nome esatto`;
+  details.querySelector('.picker-options').innerHTML = matching.length
+    ? matching.map(option => `<button type="button" role="option" class="picker-option" data-value="${escapeHtml(option.value)}">${escapeHtml(option.label)}</button>`).join('')
+    : '<p class="picker-empty">Nessun risultato nella mod selezionata.</p>';
+}
+
+function choosePicker(details, value) {
+  const set = teamFor(details.dataset.side)[Number(details.dataset.index)];
+  const name = details.dataset.field;
   if (name === 'species') {
-    if (event.type !== 'change') return;
-    const species = speciesByName(target.value);
-    if (!species) { notify('Scegli una specie presente nell’elenco della generazione.', true); target.value = speciesById(set.species).name; return; }
+    const species = speciesById(value);
     set.species = species.id;
     set.name = species.name;
     set.ability = state.gen >= 3 ? species.abilities[0] || '' : '';
     set.gender = species.gender || '';
     set.gigantamax = false;
     set.moves = ['', '', '', ''];
-    renderCards();
-    notify('');
-    return;
+  } else if (name === 'move') {
+    set.moves[Number(details.dataset.move)] = value;
+  } else {
+    set[name] = value;
   }
-  if (name === 'move') set.moves[Number(target.dataset.move)] = target.value.trim();
-  else if (name === 'ev' || name === 'iv') set[name === 'ev' ? 'evs' : 'ivs'][target.dataset.stat] = Number(target.value);
-  else if (target.type === 'checkbox') set[name] = target.checked;
-  else if (target.type === 'number') set[name] = Number(target.value);
-  else set[name] = target.value;
+  renderCards();
+  notify('');
 }
 
 function payloadSet(set) {
@@ -204,7 +251,7 @@ function payloadSet(set) {
     ...(state.gen === 9 ? { teraType } : {}),
   };
 }
-function payload() { return { gen: state.gen, player: payloadSet(state.player), opponents: state.opponents.map(payloadSet) }; }
+function payload() { return { gen: state.gen, players: state.players.map(payloadSet), opponents: state.opponents.map(payloadSet) }; }
 
 function sideHtml(side, label) {
   const mon = side.active;
@@ -235,7 +282,8 @@ function renderBattle(snapshot, append = false) {
       snapshot.p1.request.canTerastallize ? '<option value="terastallize">Teracristal</option>' : '',
     ].join('');
     actions.innerHTML = `<label class="field"><span>Opzione speciale</span><select id="special-choice">${special}</select></label>` +
-      snapshot.p1.request.moves.map((move, index) => `<button class="button button-secondary" type="button" data-choice="move ${index + 1}" ${move.disabled || move.pp === 0 ? 'disabled' : ''}>${escapeHtml(move.move)}${move.pp === undefined ? '' : ` · ${move.pp} PP`}</button>`).join('');
+      snapshot.p1.request.moves.map((move, index) => `<button class="button button-secondary" type="button" data-choice="move ${index + 1}" ${move.disabled || move.pp === 0 ? 'disabled' : ''}>${escapeHtml(move.move)}${move.pp === undefined ? '' : ` · ${move.pp} PP`}</button>`).join('') +
+      snapshot.p1.team.filter(mon => !mon.fainted && !mon.active).map(mon => `<button class="button button-switch" type="button" data-choice="switch ${mon.index}">Cambia: ${escapeHtml(mon.name)}</button>`).join('');
   } else if (snapshot.p1.request.type === 'switch') {
     actions.innerHTML = snapshot.p1.team.filter(mon => !mon.fainted && !mon.active)
       .map(mon => `<button class="button button-secondary" type="button" data-choice="switch ${mon.index}">Entra ${escapeHtml(mon.name)}</button>`).join('');
@@ -285,14 +333,47 @@ $('#mod-switch').addEventListener('click', event => {
   const button = event.target.closest('[data-gen]');
   if (button) switchGen(Number(button.dataset.gen));
 });
-for (const host of [$('#player-card'), $('#opponent-cards')]) {
-  host.addEventListener('input', updateField);
+for (const host of [$('#player-cards'), $('#opponent-cards')]) {
+  host.addEventListener('input', event => {
+    if (event.target.matches('.picker-search')) renderPicker(event.target.closest('.picker'));
+    else updateField(event);
+  });
   host.addEventListener('change', updateField);
+  host.addEventListener('toggle', event => {
+    const details = event.target;
+    if (!details.matches('.picker') || !details.open) return;
+    document.querySelectorAll('.picker[open]').forEach(other => { if (other !== details) other.open = false; });
+    details.querySelector('.picker-search').value = '';
+    renderPicker(details);
+    details.querySelector('.picker-search').focus();
+  }, true);
+  host.addEventListener('keydown', event => {
+    if (!event.target.matches('.picker-search')) return;
+    const details = event.target.closest('.picker');
+    if (event.key === 'Escape') { details.open = false; details.querySelector('summary').focus(); }
+    if (event.key !== 'Enter') return;
+    event.preventDefault();
+    const query = event.target.value.trim().toLocaleLowerCase();
+    const species = details.dataset.field === 'species' ? speciesByName(query) : null;
+    const exact = pickerValues(details).find(option => option.value.toLocaleLowerCase() === query || option.value === species?.id || option.label.toLocaleLowerCase() === query);
+    if (exact) choosePicker(details, exact.value);
+    else notify('Scrivi un nome esatto presente nell’elenco o seleziona una voce. I valori fuori dalla mod non sono supportati dal motore.', true);
+  });
+  host.addEventListener('click', event => {
+    const choice = event.target.closest('.picker-option');
+    if (choice) { choosePicker(choice.closest('.picker'), choice.dataset.value); return; }
+    const button = event.target.closest('[data-remove]');
+    if (!button) return;
+    const side = host.id === 'player-cards' ? 'player' : 'opponent';
+    const team = teamFor(side);
+    if (team.length <= 1) return;
+    team.splice(Number(button.dataset.remove), 1);
+    renderCards();
+  });
 }
-$('#opponent-cards').addEventListener('click', event => {
-  const button = event.target.closest('[data-remove]');
-  if (!button || state.opponents.length <= 1) return;
-  state.opponents.splice(Number(button.dataset.remove), 1);
+$('#add-player').addEventListener('click', () => {
+  if (state.players.length >= 6) return;
+  state.players.push(emptySet('Pikachu'));
   renderCards();
 });
 $('#add-opponent').addEventListener('click', () => {

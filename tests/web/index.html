@@ -13,9 +13,9 @@
       <div>
         <p class="eyebrow">KaizoIronMon 2.0 · pagina di test locale</p>
         <h1>Laboratorio battaglie</h1>
-        <p class="lead">Prepara un Pokémon, costruisci una squadra avversaria da 1 a 6 e prova il motore della generazione scelta.</p>
+        <p class="lead">Prepara due squadre da 1 a 6 Pokémon e prova il motore della generazione scelta.</p>
       </div>
-      <div class="masthead-mark" aria-hidden="true"><span>1</span><i>VS</i><span>6</span></div>
+      <div class="masthead-mark" aria-hidden="true"><span>6</span><i>VS</i><span>6</span></div>
     </div>
   </header>
 
@@ -38,11 +38,12 @@
       <div class="section-heading">
         <div>
           <p class="step">02 / GIOCATORE</p>
-          <h2 id="player-heading">Il tuo Pokémon</h2>
+          <h2 id="player-heading">Squadra del giocatore</h2>
         </div>
-        <span class="count">1 Pokémon</span>
+        <span id="player-count" class="count">1 / 6 Pokémon</span>
       </div>
-      <div id="player-card" class="card-host"></div>
+      <div id="player-cards" class="card-host"></div>
+      <button id="add-player" class="button button-secondary" type="button">+ Aggiungi Pokémon</button>
     </section>
 
     <section class="panel" aria-labelledby="opponent-heading">
@@ -85,7 +86,5 @@
     </section>
   </main>
 
-  <datalist id="species-list"></datalist>
-  <datalist id="item-list"></datalist>
 </body>
 </html>

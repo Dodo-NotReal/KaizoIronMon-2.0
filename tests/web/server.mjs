@@ -175,14 +175,18 @@ const server = createServer(async (request, response) => {
 		if (request.method === 'POST' && url.pathname === '/api/battles') {
 			const input = await body(request);
 			const gen = generation(input.gen);
+			const playerInput = Array.isArray(input.players) ? input.players : input.player ? [input.player] : [];
+			if (playerInput.length < 1 || playerInput.length > 6) {
+				throw new Error('Il giocatore deve avere da 1 a 6 Pokémon.');
+			}
 			if (!Array.isArray(input.opponents) || input.opponents.length < 1 || input.opponents.length > 6) {
 				throw new Error('L’avversario deve avere da 1 a 6 Pokémon.');
 			}
-			const player = cleanSet(input.player, gen, 'Giocatore');
+			const players = playerInput.map((mon, index) => cleanSet(mon, gen, `Giocatore ${index + 1}`));
 			const opponents = input.opponents.map((mon, index) => cleanSet(mon, gen, `Avversario ${index + 1}`));
 			const engine = createBattle({
 				format: `gen${gen}linkbattle`,
-				p1: { name: 'Giocatore', team: [player] },
+				p1: { name: 'Giocatore', team: players },
 				p2: { name: 'Avversario', team: opponents },
 			});
 			const session = { id: randomUUID(), engine };

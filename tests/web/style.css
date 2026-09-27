@@ -38,6 +38,21 @@ main { padding: 25px 0 60px; }
 .field input, .field select { width: 100%; min-width: 0; border: 1px solid #cddbdd; border-radius: 8px; color: #172e39; background: #fff; padding: 9px 10px; outline: none; }
 .field input:focus, .field select:focus { border-color: #188d91; box-shadow: 0 0 0 3px #ccebe9; }
 .field input:disabled, .field select:disabled { background: #eef2f3; color: #84949b; }
+.picker { position: relative; min-width: 0; }
+.picker[open] { z-index: 30; }
+.picker summary { display: flex; align-items: center; justify-content: space-between; gap: 8px; width: 100%; min-height: 38px; padding: 9px 10px; border: 1px solid #cddbdd; border-radius: 8px; background: #fff; color: #172e39; font-size: 13px; font-weight: 400; cursor: pointer; list-style: none; }
+.picker summary::-webkit-details-marker { display: none; }
+.picker summary::after { content: '▾'; color: #52747d; font-size: 14px; }
+.picker summary span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.picker summary:focus-visible, .picker[open] summary { border-color: #188d91; box-shadow: 0 0 0 3px #ccebe9; outline: none; }
+.picker-menu { position: absolute; top: calc(100% + 4px); left: 0; width: max(100%, 260px); max-width: min(420px, 85vw); padding: 9px; border: 1px solid #bdd4d7; border-radius: 10px; background: #fff; box-shadow: 0 12px 30px rgba(12, 47, 56, .18); }
+.picker-search { width: 100%; }
+.picker-count { margin: 7px 2px; color: #607681; font-size: 11px; line-height: 1.35; font-weight: 400; }
+.picker-options { max-height: 240px; overflow: auto; }
+.picker-option { display: block; width: 100%; padding: 8px 10px; border: 0; border-radius: 6px; background: transparent; text-align: left; color: #213c45; font-size: 13px; font-weight: 400; }
+.picker-option:hover, .picker-option:focus-visible { background: #e8f5f4; outline: none; }
+.picker-empty { padding: 8px 10px; color: #607681; font-size: 12px; font-weight: 400; }
+.move-grid .field:nth-child(4n) .picker-menu { left: auto; right: 0; }
 .field-wide { grid-column: span 2; }
 .subheading { color: #455e68; margin: 17px 0 8px; font-size: 12px; text-transform: uppercase; letter-spacing: .08em; }
 .stat-chips { display: flex; gap: 6px; flex-wrap: wrap; }
@@ -51,11 +66,14 @@ main { padding: 25px 0 60px; }
 .check-field { display: flex; align-items: center; gap: 8px; padding-top: 18px; color: #48616e; font-size: 13px; }
 .check-field input { accent-color: #137c82; }
 .opponents { margin-bottom: 14px; }
+.card-host { margin-bottom: 14px; }
 .button { border: 1px solid transparent; border-radius: 9px; padding: 11px 15px; font-weight: 800; font-size: 13px; }
 .button-primary { color: #fff; background: #0e737b; }
 .button-primary:hover { background: #09575f; }
 .button-secondary { color: #156e74; background: #edf7f6; border-color: #b9dedc; }
 .button-secondary:hover { background: #ddf0ee; }
+.button-switch { color: #624a11; background: #fff6df; border-color: #ead7a6; }
+.button-switch:hover { background: #fbedc9; }
 .button:disabled { opacity: .45; cursor: not-allowed; }
 .launch-panel { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 14px; }
 .launch-panel > div:first-child { max-width: 670px; }
@@ -72,5 +90,5 @@ main { padding: 25px 0 60px; }
 .battle-actions .field { min-width: 160px; }
 .battle-log { max-height: 340px; overflow: auto; border: 1px solid #dce7e8; border-radius: 9px; background: #f8fbfb; margin: 0; padding: 12px 12px 12px 36px; font: 12px/1.6 Consolas, monospace; color: #334c58; }
 .battle-log li { padding: 2px 0; }
-@media (max-width: 850px) { .form-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } .move-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } .stat-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+@media (max-width: 850px) { .form-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } .move-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } .stat-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } .form-grid .field:nth-child(even) .picker-menu, .move-grid .field:nth-child(even) .picker-menu { left: auto; right: 0; } }
 @media (max-width: 600px) { .masthead { padding: 30px 0; } .masthead-mark { display: none; } .panel { padding: 17px; } .mod-switch { grid-template-columns: repeat(3, 1fr); } .form-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } .field-wide { grid-column: span 2; } .battle-status { grid-template-columns: 1fr; } }

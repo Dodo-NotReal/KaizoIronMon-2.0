@@ -1,11 +1,18 @@
 # Test-only files
 
-Everything used only for testing lives in this directory:
+The entire `tests/` directory can be deleted when the test harness is no longer needed. Every file here is test-only:
 
-- `engine.test.ts`: automated simulator and wrapper checks (`npm test`).
-- `audit.mjs`: source/build checks run by `npm test` or `npm run audit`.
-- `generations-smoke.ts` and `battle-text-smoke.ts`: manual smoke scripts, compiled by `npm test`.
-- `web/`: local team builder, battle test page and its HTTP server (`npm run test:web`).
-- `tsconfig.json`: compiles TypeScript tests separately from the production build.
+| File | Purpose |
+| --- | --- |
+| `engine.test.ts` | Automated simulator and wrapper checks (`npm test`). |
+| `audit.mjs` | Source and build checks (`npm test`, `npm run audit`). |
+| `generations-smoke.ts` | Manual generation smoke script. |
+| `battle-text-smoke.ts` | Manual English battle text smoke script. |
+| `tsconfig.json` | Compiles TypeScript tests separately from the production build. |
+| `README.md` | This test-only guide. |
+| `web/index.html` | Local battle test page. |
+| `web/app.js` | Team editor, searchable menus and battle controls. |
+| `web/style.css` | Styles for the local page. |
+| `web/server.mjs` | Local HTTP server and test battle API (`npm run test:web`). |
 
-`npm run build` does not depend on this directory. The `test`, `test:web` and `audit` npm scripts are the only root-level entry points that refer to it. `tools/clean.mjs` remains outside because normal builds use it; `examples/teams.ts` remains outside because the public example uses those sample teams.
+The references outside this directory are listed in the root [README](../README.md#removing-the-test-harness-later): `package.json` scripts `test`, `test:web`, `audit`, and descriptions in `README.md` and `ARCHITECTURE.md`. The generated `dist/tests/` directory can be cleared with `npm run build`. Normal builds do not depend on these files. `tools/clean.mjs` and `examples/teams.ts` are used by the normal build or example and should stay.
