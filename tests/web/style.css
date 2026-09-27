@@ -40,8 +40,9 @@ main { padding: 25px 0 60px; }
 .card-action[aria-expanded="true"] { border-color: #8bc7c6; background: #e8f5f4; }
 .card-action[data-unsaved="true"]::after { content: ' ●'; color: #ad5928; }
 .remove-button { color: #ac4639; }
-.card-chevron { width: 32px; height: 31px; padding: 0; font-size: 22px; line-height: 1; transition: transform .15s ease; }
-.is-collapsed .card-chevron { transform: rotate(-90deg); }
+.card-chevron { display: grid; place-items: center; flex: 0 0 32px; width: 32px; height: 31px; padding: 0; }
+.card-chevron::before { content: ''; display: block; width: 8px; height: 8px; border-right: 2px solid currentColor; border-bottom: 2px solid currentColor; transform: translateY(-2px) rotate(45deg); transition: transform .15s ease; }
+.is-collapsed .card-chevron::before { transform: translateX(-2px) rotate(-45deg); }
 .card-body[hidden], .card-json[hidden] { display: none; }
 .card-json { margin: 0 0 18px; padding: 14px; border: 1px solid #c8dcdf; border-radius: 9px; background: #f1f7f7; }
 .card-json label { display: block; margin-bottom: 8px; color: #3c5a64; font-size: 12px; font-weight: 800; }

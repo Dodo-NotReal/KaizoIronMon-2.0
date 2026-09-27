@@ -131,7 +131,7 @@ function renderCard(set, side, index) {
         <button class="card-action" type="button" data-card-json data-unsaved="${view.jsonDraft !== null}" aria-expanded="${view.expanded && view.jsonOpen}" aria-controls="${cardId}-json" aria-label="JSON di ${escapeHtml(species.name)}${view.jsonDraft !== null ? ', modifiche da applicare' : ''}">JSON</button>
         <button class="card-action" type="button" data-card-reset>RESET</button>
         ${canRemove ? '<button class="card-action remove-button" type="button" data-card-remove>Rimuovi</button>' : ''}
-        <button class="card-action card-chevron" type="button" data-card-collapse aria-expanded="${view.expanded}" aria-controls="${cardId}-body" aria-label="${view.expanded ? 'Chiudi' : 'Apri'} scheda di ${escapeHtml(species.name)}">⌄</button>
+        <button class="card-action card-chevron" type="button" data-card-collapse aria-expanded="${view.expanded}" aria-controls="${cardId}-body" aria-label="${view.expanded ? 'Chiudi' : 'Apri'} scheda di ${escapeHtml(species.name)}"></button>
       </div>
     </div>
     <div id="${cardId}-body" class="card-body" ${view.expanded ? '' : 'hidden'}>
